@@ -228,7 +228,7 @@ local function l(b, c)
                     return c("TextLabel", b)
                 end
                 local function x(d, e, f, g, h)
-                    local b = c("ImageLabel", {AnchorPoint = Vector2.new(.5, .5), Position = f, Size = e, BackgroundTransparency = 1, Image = t.Glow, ImageColor3 = Color3.fromRGB(226, 218, 230), ImageTransparency = g, ZIndex = 0, Parent = d}) c("UIGradient", {Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), a.Accent), Rotation = h or 90, Parent = b})
+                    local b = c("ImageLabel", {AnchorPoint = Vector2.new(.5, .5), Position = f, Size = e, BackgroundTransparency = 1, Image = t.Glow, ImageColor3 = a.Accent, ImageTransparency = math.max(0.2, (g or 0.8) - 0.15), ZIndex = 0, Parent = d}) c("UIGradient", {Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), a.Accent), Rotation = h or 90, Parent = b})
                     return b
                 end
                 local function M(a)
@@ -362,12 +362,12 @@ local function l(b, c)
                 end
                 local function B(f, g, i, k)
                     local parent = f._sectionList or f.List
-                    local d = {Size = UDim2.new(1, 0, 0, i), BackgroundColor3 = a.Surface2, BorderSizePixel = 0, LayoutOrder = f:_nextOrder(), Parent = parent}
+                    local d = {Size = UDim2.new(1, 0, 0, i), BackgroundColor3 = a.Surface2, BackgroundTransparency = 1, BorderSizePixel = 0, LayoutOrder = f:_nextOrder(), Parent = parent}
                     if g == "TextButton" then
                         d.AutoButtonColor = false d.Text = ""
                     end
-                    local b = c(g, d) b:SetAttribute("NoDrag", true) e(b)
-                    local j = h(b, a.Stroke)
+                    local b = c(g, d) b:SetAttribute("NoDrag", true)
+                    local j = h(b, a.Stroke, 1)
                     return b, j
                 end
                 local function G(b, f, g, c)
@@ -409,7 +409,7 @@ local function l(b, c)
                     else
                         name = tostring(b or "")
                     end
-                    local card = c("Frame", {Size = UDim2.new(.5, -5, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = a.Surface, BorderSizePixel = 0, ClipsDescendants = true, LayoutOrder = self:_nextOrder(), Parent = self.List})
+                    local card = c("Frame", {Size = UDim2.new(.5, -5, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = a.Background, BorderSizePixel = 0, ClipsDescendants = true, LayoutOrder = self:_nextOrder(), Parent = self.List})
                     e(card, UDim.new(0, 10)) h(card, a.Stroke)
                     c("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 0), Parent = card})
                     local header = c("Frame", {Size = UDim2.new(1, 0, 0, 36), BackgroundTransparency = 1, LayoutOrder = 1, Parent = card})
@@ -422,7 +422,88 @@ local function l(b, c)
                     local body = c("Frame", {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, LayoutOrder = 3, Parent = card})
                     o(body, 8, 8, 8, 10)
                     c("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 6), Parent = body})
-                    self._sectionList = body self._sectionCard = card
+                    self._sectionList = body
+                    self._sectionCard = card
+                    -- section drag + snap ghost
+                    do
+                        local dragging = false
+                        local dragStart, startPos
+                        local ghost
+                        local function snapSlots()
+                            local list = self.List
+                            local cards = {}
+                            for _, ch in ipairs(list:GetChildren()) do
+                                if ch:IsA("Frame") and ch ~= ghost then
+                                    table.insert(cards, ch)
+                                end
+                            end
+                            table.sort(cards, function(a, b)
+                                return a.LayoutOrder < b.LayoutOrder
+                            end)
+                            return cards
+                        end
+                        local function nearestSlot(absPos)
+                            local cards = snapSlots()
+                            local best, bestDist, bestOrder = nil, math.huge, card.LayoutOrder
+                            for _, ch in ipairs(cards) do
+                                if ch ~= card then
+                                    local cpos = ch.AbsolutePosition + ch.AbsoluteSize * 0.5
+                                    local d = (cpos - absPos).Magnitude
+                                    if d < bestDist then
+                                        bestDist = d
+                                        best = ch
+                                        bestOrder = ch.LayoutOrder
+                                    end
+                                end
+                            end
+                            return best, bestOrder
+                        end
+                        header.InputBegan:Connect(function(input)
+                            if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then
+                                return
+                            end
+                            dragging = true
+                            dragStart = Vector2.new(input.Position.X, input.Position.Y)
+                            startPos = card.AbsolutePosition
+                            ghost = c("Frame", {
+                                Size = UDim2.fromOffset(card.AbsoluteSize.X, card.AbsoluteSize.Y),
+                                Position = UDim2.fromOffset(card.AbsolutePosition.X - self.List.AbsolutePosition.X + self.List.CanvasPosition.X, card.AbsolutePosition.Y - self.List.AbsolutePosition.Y + self.List.CanvasPosition.Y),
+                                BackgroundColor3 = a.Accent,
+                                BackgroundTransparency = 0.85,
+                                BorderSizePixel = 0,
+                                ZIndex = 50,
+                                Parent = self.List,
+                            })
+                            e(ghost, UDim.new(0, 10))
+                            h(ghost, a.Accent, 0.5, 1)
+                            card.ZIndex = 60
+                        end)
+                        table.insert(self.Window._connections, q.InputChanged:Connect(function(input)
+                            if not dragging then return end
+                            if input.UserInputType ~= Enum.UserInputType.MouseMovement and input.UserInputType ~= Enum.UserInputType.Touch then return end
+                            local pos = Vector2.new(input.Position.X, input.Position.Y)
+                            local rel = pos - dragStart
+                            if ghost then
+                                local lp = self.List.AbsolutePosition
+                                local cp = self.List.CanvasPosition
+                                ghost.Position = UDim2.fromOffset(startPos.X + rel.X - lp.X + cp.X, startPos.Y + rel.Y - lp.Y + cp.Y)
+                            end
+                        end))
+                        table.insert(self.Window._connections, q.InputEnded:Connect(function(input)
+                            if not dragging then return end
+                            if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then return end
+                            dragging = false
+                            local pos = Vector2.new(input.Position.X, input.Position.Y)
+                            local target, order = nearestSlot(pos)
+                            if target and order then
+                                local myOrder = card.LayoutOrder
+                                card.LayoutOrder = order
+                                target.LayoutOrder = myOrder
+                            end
+                            if ghost then ghost:Destroy() ghost = nil end
+                            card.ZIndex = 1
+                        end))
+                    end
                     return n(self, {}, {Set = function()
                         end
                     }, card, "Section")
@@ -1326,7 +1407,7 @@ local function l(b, c)
                                             if type(k.Keybind) == "string" then
                                                 k.Keybind = Enum.KeyCode[k.Keybind]
                                             end
-                                            local V = k.Size or UDim2.fromOffset(920, 560)
+                                            local V = k.Size or UDim2.fromOffset(760, 480)
                                             local N = k.Keybind or Enum.KeyCode.LeftAlt
                                             local j = setmetatable({Tabs = {}, CurrentTab = nil, Open = true, Keybind = N, _connections = {}, _controls = {}, _inputListeners = {Began = {}, Changed = {}, Ended = {}, Render = {}}, _frameSteps = {}, _destroyed = false}, g)
                                             local function B(a)
@@ -1346,7 +1427,7 @@ local function l(b, c)
                                             local z = c(p, {Name = "Window", AnchorPoint = Vector2.new(.5, .5), Position = UDim2.fromScale(.5, .5), Size = V, BackgroundTransparency = 1, Parent = s}) j.Root = z
                                             local O = c("UIScale", {Parent = z}) j.Scale = O
                                             local Q = c("ImageLabel", {Position = UDim2.fromOffset(-25, -25), Size = UDim2.new(1, 50, 1, 50), BackgroundTransparency = 1, Image = t.Shadow, ImageColor3 = Color3.new(0, 0, 0), ImageTransparency = .6, ScaleType = Enum.ScaleType.Slice, SliceCenter = Rect.new(49, 49, 450, 450), Parent = z}) j.Shadow = Q
-                                            local n = c(H, {Name = "Body", Size = UDim2.fromScale(1, 1), BackgroundColor3 = a.Background, BorderSizePixel = 0, Parent = z}) j.Body = n e(n, UDim.new(0, 10)) j.BodyStroke = h(n, a.Stroke) M(n) x(n, UDim2.fromOffset(500, 180), UDim2.new(.5, 0, 1, 8), .86, 270) x(n, UDim2.fromOffset(130, 60), UDim2.new(0, -10, 1, -10), .75, 90) x(n, UDim2.fromOffset(520, 240), UDim2.new(1, -14, 0, 10), .92, 90)
+                                            local n = c(H, {Name = "Body", Size = UDim2.fromScale(1, 1), BackgroundColor3 = a.Background, BorderSizePixel = 0, Parent = z}) j.Body = n e(n, UDim.new(0, 10)) j.BodyStroke = h(n, a.Stroke) M(n) x(n, UDim2.fromOffset(620, 280), UDim2.new(.5, 0, 1, 12), .55, 270) x(n, UDim2.fromOffset(280, 180), UDim2.new(0, -30, 1, -20), .5, 90) x(n, UDim2.fromOffset(600, 320), UDim2.new(1, -10, 0, 0), .6, 90) x(n, UDim2.fromOffset(220, 220), UDim2.new(0, 50, 0, 30), .65, 45) x(n, UDim2.fromOffset(400, 200), UDim2.new(0.5, 0, 0.5, 0), .7, 0)
                                             local C = c(p, {Name = "Sidebar", Size = UDim2.new(0, 170, 1, 0), BackgroundTransparency = 1, Parent = n}) c(p, {Position = UDim2.new(0, 170, 0, 28), Size = UDim2.new(0, 1, 1, -56), BackgroundColor3 = a.Stroke, BorderSizePixel = 0, Parent = n})
                                             local J = c(p, {Name = "Header", Size = UDim2.new(1, 0, 0, 72), BackgroundTransparency = 1, Parent = C})
                                             local X = c("ImageLabel", {Position = UDim2.fromOffset(22, 27), Size = UDim2.fromOffset(30, 28), BackgroundTransparency = 1, Image = "", ImageColor3 = a.Accent, ScaleType = Enum.ScaleType.Fit, Parent = J}) u(X, k.Icon or t.Logo) d {Position = UDim2.fromOffset(60, 25), Size = UDim2.new(1, -70, 0, 20), Text = k.Title or "Airflow", TextSize = 20, Parent = J}
@@ -1390,15 +1471,15 @@ local function l(b, c)
                                             ) w.MouseButton1Click:Connect(function() j:Toggle(false)
                                             end
                                             )
-                                            local K = c(p, {Name = "Notifications", AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -20, 1, -20), Size = UDim2.new(0, 280, 1, -40), BackgroundTransparency = 1, Parent = s})
+                                            local K = c(p, {Name = "Notifications", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 16), Size = UDim2.new(0, 280, 1, -40), BackgroundTransparency = 1, Parent = s})
                                             local function aa() K.Size = UDim2.new(0, math.min(280, s.AbsoluteSize.X - 40), 1, -40)
                                             end
-                                            table.insert(j._connections, s:GetPropertyChangedSignal(I):Connect(aa)) c(L, {SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Bottom, Padding = UDim.new(0, 4), Parent = K}) j.NotifyHolder = K j._notifyOrder = 0 j._toasts = {}
+                                            table.insert(j._connections, s:GetPropertyChangedSignal(I):Connect(aa)) c(L, {SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Top, Padding = UDim.new(0, 6), Parent = K}) j.NotifyHolder = K j._notifyOrder = 0 j._toasts = {}
                                             j.MaxNotifications = k.MaxNotifications or 4 j._controlsDirty = true table.insert(j._connections, n.DescendantAdded:Connect(function() j._controlsDirty = true
                                             end
                                             )) table.insert(j._connections, n.DescendantRemoving:Connect(function() j._controlsDirty = true
                                             end
-                                            )) j:_enableDrag() j.MaxSize = k.MaxSize j.KeepOnScreen = k.KeepOnScreen ~= false j:_enableResize(k.MinSize or Vector2.new(480, 360))
+                                            )) j:_enableDrag() j.MaxSize = k.MaxSize j.KeepOnScreen = k.KeepOnScreen ~= false if k.Resize == true then j:_enableResize(k.MinSize or Vector2.new(480, 360)) end
                                             local F = k.ConfigurationSaving
                                             if type(F) == A and F.Enabled ~= false then
                                                 j.ConfigFolder = F.FolderName or G j.ConfigName = F.FileName or "default" j._autoSaveEnabled = true
@@ -1428,22 +1509,89 @@ local function l(b, c)
                                                     local sub = k.WatermarkSub or(P(N) .. " · toggle")
                                                     local parent = s.Parent
                                                     local wg = c("ScreenGui", {Name = "AirFlowWatermark", IgnoreGuiInset = true, ResetOnSpawn = false, DisplayOrder = 999999, ZIndexBehavior = Enum.ZIndexBehavior.Sibling, Parent = parent})
-                                                    pcall(function() if typeof(syn) == "table" and typeof(syn.protect_gui) == "function" then
+                                                    pcall(function()
+                                                        if typeof(syn) == "table" and typeof(syn.protect_gui) == "function" then
                                                             syn.protect_gui(wg)
                                                         end
-                                                    end
-                                                    )
-                                                    local W = c("Frame", {Name = "Watermark", Position = UDim2.fromOffset(14, 14), Size = UDim2.fromOffset(0, 0), AutomaticSize = Enum.AutomaticSize.XY, BackgroundColor3 = a.Background, BorderSizePixel = 0, Parent = wg})
-                                                    e(W, UDim.new(0, 6))
+                                                    end)
+                                                    local W = c("Frame", {
+                                                        Name = "Watermark",
+                                                        AnchorPoint = Vector2.new(0.5, 0),
+                                                        Position = UDim2.new(0.5, 0, 0, 10),
+                                                        Size = UDim2.fromOffset(0, 0),
+                                                        AutomaticSize = Enum.AutomaticSize.XY,
+                                                        BackgroundColor3 = a.Background,
+                                                        BorderSizePixel = 0,
+                                                        Parent = wg,
+                                                    })
+                                                    e(W, UDim.new(0, 8))
                                                     h(W, a.Stroke, 0, 1)
-                                                    local bar = c("Frame", {Size = UDim2.new(0, 2, 1, 0), BackgroundColor3 = a.Accent, BorderSizePixel = 0, Parent = W})
-                                                    local hold = c("Frame", {BackgroundTransparency = 1, AutomaticSize = Enum.AutomaticSize.XY, Parent = W})
-                                                    o(hold, 6, 10, 6, 8)
-                                                    c("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, Parent = hold})
-                                                    local t1 = d {Size = UDim2.fromOffset(0, 16), AutomaticSize = Enum.AutomaticSize.X, Text = tostring(title), TextSize = 13, FontFace = i.Semibold or i.Medium, TextColor3 = a.Text, TextTruncate = Enum.TextTruncate.None, LayoutOrder = 1, Parent = hold}
-                                                    local sep = d {Size = UDim2.fromOffset(0, 16), AutomaticSize = Enum.AutomaticSize.X, Text = "·", TextSize = 13, TextColor3 = a.Muted, TextTruncate = Enum.TextTruncate.None, LayoutOrder = 2, Parent = hold}
-                                                    local t2 = d {Size = UDim2.fromOffset(0, 16), AutomaticSize = Enum.AutomaticSize.X, Text = tostring(sub), TextSize = 12, FontFace = i.Regular, TextColor3 = a.Muted, TextTruncate = Enum.TextTruncate.None, LayoutOrder = 3, Parent = hold}
-                                                    j.Watermark = W j._wmGui = wg j._wmTitle = t1 j._wmSub = t2
+                                                    M(W)
+                                                    x(W, UDim2.fromOffset(420, 100), UDim2.new(0.5, 0, 0.5, 0), .45, 90)
+                                                    x(W, UDim2.fromOffset(280, 80), UDim2.new(0, 0, 0.5, 0), .5, 0)
+                                                    x(W, UDim2.fromOffset(280, 80), UDim2.new(1, 0, 0.5, 0), .5, 180)
+                                                    local hold = c("Frame", {
+                                                        BackgroundTransparency = 1,
+                                                        AutomaticSize = Enum.AutomaticSize.XY,
+                                                        Parent = W,
+                                                    })
+                                                    o(hold, 8, 16, 8, 16)
+                                                    c("UIListLayout", {
+                                                        FillDirection = Enum.FillDirection.Horizontal,
+                                                        VerticalAlignment = Enum.VerticalAlignment.Center,
+                                                        Padding = UDim.new(0, 10),
+                                                        SortOrder = Enum.SortOrder.LayoutOrder,
+                                                        Parent = hold,
+                                                    })
+                                                    local function metalText(props)
+                                                        local lab = d(props)
+                                                        local g = c("UIGradient", {
+                                                            Color = ColorSequence.new({
+                                                                ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 200, 210)),
+                                                                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
+                                                                ColorSequenceKeypoint.new(1, Color3.fromRGB(170, 170, 185)),
+                                                            }),
+                                                            Rotation = 90,
+                                                            Parent = lab,
+                                                        })
+                                                        return lab
+                                                    end
+                                                    local t1 = metalText({
+                                                        Size = UDim2.fromOffset(0, 18),
+                                                        AutomaticSize = Enum.AutomaticSize.X,
+                                                        Text = tostring(title),
+                                                        TextSize = 14,
+                                                        FontFace = i.Semibold or i.Medium,
+                                                        TextColor3 = a.Text,
+                                                        TextTruncate = Enum.TextTruncate.None,
+                                                        LayoutOrder = 1,
+                                                        Parent = hold,
+                                                    })
+                                                    local sep = metalText({
+                                                        Size = UDim2.fromOffset(0, 18),
+                                                        AutomaticSize = Enum.AutomaticSize.X,
+                                                        Text = "·",
+                                                        TextSize = 14,
+                                                        TextColor3 = a.Muted,
+                                                        TextTruncate = Enum.TextTruncate.None,
+                                                        LayoutOrder = 2,
+                                                        Parent = hold,
+                                                    })
+                                                    local t2 = metalText({
+                                                        Size = UDim2.fromOffset(0, 18),
+                                                        AutomaticSize = Enum.AutomaticSize.X,
+                                                        Text = tostring(sub),
+                                                        TextSize = 13,
+                                                        FontFace = i.Regular,
+                                                        TextColor3 = a.Muted,
+                                                        TextTruncate = Enum.TextTruncate.None,
+                                                        LayoutOrder = 3,
+                                                        Parent = hold,
+                                                    })
+                                                    j.Watermark = W
+                                                    j._wmGui = wg
+                                                    j._wmTitle = t1
+                                                    j._wmSub = t2
                                                 end
                                                 function j:SetWatermark(t, s)
                                                     if j._wmTitle and t ~= nil then
@@ -1457,11 +1605,11 @@ local function l(b, c)
                                                     if j._wmGui then
                                                         j._wmGui.Enabled = v ~= false
                                                     elseif j.Watermark then
-                                                            j.Watermark.Visible = v ~= false
-                                                        end
+                                                        j.Watermark.Visible = v ~= false
                                                     end
                                                 end
-                                                O.Scale = .9 n.GroupTransparency = 1 Q.ImageTransparency = 1 j.BodyStroke.Transparency = 1 z.Visible = false j:_fitToScreen(true) table.insert(j._connections, s:GetPropertyChangedSignal(I):Connect(function() j:_fitToScreen() j:_clampToScreen()
+                                            end
+                                            O.Scale = .9 n.GroupTransparency = 1 Q.ImageTransparency = 1 j.BodyStroke.Transparency = 1 z.Visible = false j:_fitToScreen(true) table.insert(j._connections, s:GetPropertyChangedSignal(I):Connect(function() j:_fitToScreen() j:_clampToScreen()
                                                 end
                                                 ))
                                                 if k.OpenButton ~= nil and k.OpenButton ~= false or k.OpenButton == nil and m then
@@ -1485,52 +1633,60 @@ local function l(b, c)
                                                 if not k.NoConfigTab then
                                                     task.defer(function() local ok, err = pcall(function()
                                                         local cfg = j:Tab({Name = "Config", Icon = "save", Desc = "Save & load"})
-                                                        cfg:Section({Name = "Profile", Icon = "save"})
-                                                        local nameBox = cfg:Input({Name = "Config name", Placeholder = "my config", Default = "default"})
+                                                        cfg:Section({Name = "Profile", Icon = "user"})
+                                                        cfg:Paragraph({Name = "Configs", Content = "Save and load all flagged controls. Type a name, then Save or Load."})
+                                                        local nameBox = cfg:Input({Name = "Config name", Placeholder = "default", Default = "default"})
                                                         local status = cfg:Label({Text = "No config loaded"})
                                                         local function readName()
                                                             local n = nil
                                                             if nameBox then
-                                                                local g = nameBox.Get if type(g) == "function" then
-                                                                        n = g(nameBox)
-                                                                    end
+                                                                local g = nameBox.Get
+                                                                if type(g) == "function" then
+                                                                    n = g(nameBox)
                                                                 end
-                                                                if type(n) ~= "string" or n == "" then
-                                                                    n = j.ConfigName or "default"
-                                                                end
-                                                                return n
                                                             end
-                                                            cfg:Section({Name = "Actions", Icon = "folder"})
-                                                            cfg:Button({Name = "Save", Desc = "Write flagged options", Icon = "save", Style = "Primary", Callback = function()
-                                                                    local n = readName() local saveOk, saveErr = j:SaveConfig(n)
-                                                                    if saveOk then
-                                                                        status:Set("Active: " .. n) j:Notify({Title = "Config", Content = 'Saved "' .. n .. '"', Duration = 2.5})
-                                                                    else
-                                                                        j:Notify({Title = "Config", Content = tostring(saveErr), Duration = 2.5})
-                                                                    end
-                                                                end
-                                                            })
-                                                            cfg:Button({Name = "Load", Icon = "folder-open", Callback = function()
-                                                                    local n = readName() local loadOk, loadErr = j:LoadConfig(n)
-                                                                    if loadOk then
-                                                                        status:Set("Active: " .. n) j:Notify({Title = "Config", Content = 'Loaded "' .. n .. '"', Duration = 2.5})
-                                                                    else
-                                                                        j:Notify({Title = "Config", Content = tostring(loadErr), Duration = 2.5})
-                                                                    end
-                                                                end
-                                                            })
-                                                            cfg:Button({Name = "Delete", Icon = "trash-2", Callback = function()
-                                                                    local n = readName() local delOk = j:DeleteConfig(n)
-                                                                    j:Notify({Title = "Config", Content = delOk and('Deleted "' .. n .. '"') or "Delete failed", Duration = 2})
-                                                                end
-                                                            })
-                                                            cfg:Button({Name = "List saved", Icon = "list", Callback = function()
-                                                                    local list = j:ListConfigs() or {}
-                                                                    j:Notify({Title = "Configs", Content = #list > 0 and table.concat(list, ", ") or "None saved", Duration = 3})
-                                                                end
-                                                            })
+                                                            if type(n) ~= "string" or n == "" then
+                                                                n = j.ConfigName or "default"
+                                                            end
+                                                            return n
                                                         end
-                                                        ) if not ok then
+                                                        cfg:Section({Name = "Actions", Icon = "folder"})
+                                                        cfg:Button({Name = "Save config", Desc = "Overwrite with current values", Icon = "save", Style = "Primary", Callback = function()
+                                                            local n = readName()
+                                                            local saveOk, saveErr = j:SaveConfig(n)
+                                                            if saveOk then
+                                                                status:Set("Active: " .. n)
+                                                                j:Notify({Title = "Config", Content = 'Saved "' .. n .. '"', Duration = 2.5})
+                                                            else
+                                                                j:Notify({Title = "Config", Content = tostring(saveErr), Duration = 2.5})
+                                                            end
+                                                        end})
+                                                        cfg:Button({Name = "Load config", Desc = "Apply saved values", Icon = "folder-open", Callback = function()
+                                                            local n = readName()
+                                                            local loadOk, loadErr = j:LoadConfig(n)
+                                                            if loadOk then
+                                                                status:Set("Active: " .. n)
+                                                                j:Notify({Title = "Config", Content = 'Loaded "' .. n .. '"', Duration = 2.5})
+                                                            else
+                                                                j:Notify({Title = "Config", Content = tostring(loadErr), Duration = 2.5})
+                                                            end
+                                                        end})
+                                                        cfg:Button({Name = "Delete config", Icon = "trash-2", Callback = function()
+                                                            local n = readName()
+                                                            local delOk = j:DeleteConfig(n)
+                                                            j:Notify({Title = "Config", Content = delOk and ('Deleted "' .. n .. '"') or "Delete failed", Duration = 2})
+                                                        end})
+                                                        cfg:Button({Name = "Refresh list", Icon = "list", Callback = function()
+                                                            local list = j:ListConfigs() or {}
+                                                            j:Notify({Title = "Configs", Content = #list > 0 and table.concat(list, ", ") or "None saved", Duration = 3})
+                                                        end})
+                                                        cfg:Section({Name = "Settings", Icon = "settings"})
+                                                        cfg:Toggle({Name = "Auto-save", Desc = "Save when a flagged control changes", Default = j._autoSaveEnabled == true, Callback = function(v)
+                                                            j._autoSaveEnabled = v == true
+                                                            j:Notify({Title = "Auto-save", Content = v and "On" or "Off", Duration = 1.5})
+                                                        end})
+                                                        cfg:Paragraph({Name = "Menu bind", Content = "Click the key chip in the sidebar to rebind the menu toggle."})
+                                                    ) if not ok then
                                                             warn("[AirFlow] config: " .. tostring(err))
                                                         end
                                                     end
