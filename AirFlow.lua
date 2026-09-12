@@ -407,27 +407,34 @@ local function l(b, c)
                         name = b.Name or b.Title or ""
                         icon = b.Icon
                     else
-                        name = b or ""
+                        name = tostring(b or "")
                     end
                     local card = c("Frame", {
-                        Size = UDim2.new(0.5, -4, 0, 0),
+                        Size = UDim2.new(0.5, -5, 0, 0),
                         AutomaticSize = Enum.AutomaticSize.Y,
-                        BackgroundColor3 = a.Surface2,
+                        BackgroundColor3 = a.Surface,
                         BorderSizePixel = 0,
+                        ClipsDescendants = true,
                         LayoutOrder = self:_nextOrder(),
                         Parent = self.List,
                     })
                     e(card, UDim.new(0, 10))
                     h(card, a.Stroke)
-                    local header = c("Frame", {
-                        Size = UDim2.new(1, 0, 0, 34),
-                        BackgroundTransparency = 1,
+                    c("UIListLayout", {
+                        SortOrder = Enum.SortOrder.LayoutOrder,
+                        Padding = UDim.new(0, 0),
                         Parent = card,
                     })
-                    local padH = 12
+                    local header = c("Frame", {
+                        Size = UDim2.new(1, 0, 0, 36),
+                        BackgroundTransparency = 1,
+                        LayoutOrder = 1,
+                        Parent = card,
+                    })
+                    local left = 12
                     if icon then
                         local ic = c("ImageLabel", {
-                            Position = UDim2.fromOffset(12, 9),
+                            Position = UDim2.fromOffset(12, 10),
                             Size = UDim2.fromOffset(16, 16),
                             BackgroundTransparency = 1,
                             ImageColor3 = a.Accent,
@@ -435,11 +442,11 @@ local function l(b, c)
                             Parent = header,
                         })
                         u(ic, icon)
-                        padH = 34
+                        left = 34
                     end
                     d {
-                        Position = UDim2.fromOffset(padH, 0),
-                        Size = UDim2.new(1, -padH - 10, 1, 0),
+                        Position = UDim2.fromOffset(left, 0),
+                        Size = UDim2.new(1, -left - 8, 1, 0),
                         Text = tostring(name),
                         TextSize = 14,
                         FontFace = i.Medium,
@@ -448,21 +455,21 @@ local function l(b, c)
                         TextTruncate = Enum.TextTruncate.AtEnd,
                         Parent = header,
                     }
-                    local line = c("Frame", {
-                        Position = UDim2.fromOffset(10, 34),
-                        Size = UDim2.new(1, -20, 0, 1),
+                    local sep = c("Frame", {
+                        Size = UDim2.new(1, 0, 0, 1),
                         BackgroundColor3 = a.Stroke,
                         BorderSizePixel = 0,
+                        LayoutOrder = 2,
                         Parent = card,
                     })
                     local body = c("Frame", {
-                        Position = UDim2.fromOffset(0, 35),
                         Size = UDim2.new(1, 0, 0, 0),
                         AutomaticSize = Enum.AutomaticSize.Y,
                         BackgroundTransparency = 1,
+                        LayoutOrder = 3,
                         Parent = card,
                     })
-                    o(body, 8, 8, 10, 10)
+                    o(body, 8, 8, 8, 10)
                     c("UIListLayout", {
                         SortOrder = Enum.SortOrder.LayoutOrder,
                         Padding = UDim.new(0, 6),
@@ -470,11 +477,7 @@ local function l(b, c)
                     })
                     self._sectionList = body
                     self._sectionCard = card
-                    return n(self, {}, {
-                        Set = function(_, title)
-                            -- no-op title setter kept for API compat
-                        end,
-                    }, card, "Section")
+                    return n(self, {}, {Set = function() end}, card, "Section")
                 end
                 function j:Divider()
                     local b = c("Frame", {Size = UDim2.new(1, 0, 0, 1), BackgroundColor3 = a.Stroke, BorderSizePixel = 0, LayoutOrder = self:_nextOrder(), Parent = self.List})
@@ -1439,8 +1442,8 @@ local function l(b, c)
                                             ) w.MouseButton1Click:Connect(function() j:Toggle(false)
                                             end
                                             )
-                                            local K = c(p, {Name = "Notifications", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 16), Size = UDim2.new(0, 280, 1, -32), BackgroundTransparency = 1, Parent = s})
-                                            local function aa() K.Size = UDim2.new(0, math.min(280, s.AbsoluteSize.X - 40), 1, -32)
+                                            local K = c(p, {Name = "Notifications", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 16), Size = UDim2.new(0, 220, 1, -32), BackgroundTransparency = 1, Parent = s})
+                                            local function aa() K.Size = UDim2.new(0, math.min(220, s.AbsoluteSize.X - 40), 1, -32)
                                             end
                                             table.insert(j._connections, s:GetPropertyChangedSignal(I):Connect(aa)) c(L, {SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Top, Padding = UDim.new(0, 6), Parent = K}) j.NotifyHolder = K j._notifyOrder = 0 j._toasts = {}
                                             j.MaxNotifications = k.MaxNotifications or 4 j._controlsDirty = true table.insert(j._connections, n.DescendantAdded:Connect(function() j._controlsDirty = true
@@ -1469,17 +1472,75 @@ local function l(b, c)
                                                     syn.protect_gui(s)
                                                 end
                                             end
-                                            ) s.Parent = k.Parent or ag() do
+                                            ) s.Parent = k.Parent or ag()
+                                            do
                                                 local wmOn = k.Watermark ~= false
-                                                local title = k.WatermarkTitle or k.Name or "AirFlow"
-                                                local sub = k.WatermarkSub or(P(N) .. " · toggle")
                                                 if wmOn then
-                                                    local W = c("Frame", {Name = "Watermark", Position = UDim2.fromOffset(14, 14), Size = UDim2.fromOffset(0, 0), AutomaticSize = Enum.AutomaticSize.XY, BackgroundColor3 = a.Background, BorderSizePixel = 0, ZIndex = 100, ClipsDescendants = true, Parent = s}) e(W, UDim.new(0, 8)) h(W, a.Stroke) M(W) x(W, UDim2.fromOffset(160, 70), UDim2.new(1, 10, .5, 0), .82, 90) x(W, UDim2.fromOffset(90, 50), UDim2.new(0, -8, 1, 6), .78, 270)
-                                                    local bar = c("Frame", {Size = UDim2.new(0, 3, 1, 0), BackgroundColor3 = a.Accent, BorderSizePixel = 0, ZIndex = 2, Parent = W}) e(bar, UDim.new(0, 2))
-                                                    local hold = c("Frame", {Position = UDim2.fromOffset(10, 0), Size = UDim2.fromOffset(0, 0), AutomaticSize = Enum.AutomaticSize.XY, BackgroundTransparency = 1, Parent = W}) o(hold, 8, 12, 6, 6) c("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 1), Parent = hold})
-                                                    local t1 = d {Size = UDim2.fromOffset(0, 16), AutomaticSize = Enum.AutomaticSize.X, Text = tostring(title), TextSize = 13, FontFace = i.Medium, TextColor3 = a.Text, TextTruncate = Enum.TextTruncate.None, LayoutOrder = 1, Parent = hold}
-                                                    local t2 = d {Size = UDim2.fromOffset(0, 14), AutomaticSize = Enum.AutomaticSize.X, Text = tostring(sub), TextSize = 11, FontFace = i.Regular, TextColor3 = a.Muted, TextTruncate = Enum.TextTruncate.None, LayoutOrder = 2, Parent = hold}
-                                                    j.Watermark = W j._wmTitle = t1 j._wmSub = t2
+                                                    local title = k.WatermarkTitle or k.Name or "AirFlow"
+                                                    local sub = k.WatermarkSub or (P(N) .. " · toggle")
+                                                    local W = c("Frame", {
+                                                        Name = "Watermark",
+                                                        Position = UDim2.fromOffset(12, 12),
+                                                        Size = UDim2.fromOffset(0, 0),
+                                                        AutomaticSize = Enum.AutomaticSize.XY,
+                                                        BackgroundColor3 = a.Background,
+                                                        BorderSizePixel = 0,
+                                                        ZIndex = 200,
+                                                        Parent = s,
+                                                    })
+                                                    e(W, UDim.new(0, 8))
+                                                    h(W, a.Stroke)
+                                                    M(W)
+                                                    x(W, UDim2.fromOffset(140, 56), UDim2.new(1, 8, 0.5, 0), .85, 90)
+                                                    local bar = c("Frame", {
+                                                        Size = UDim2.new(0, 3, 1, 0),
+                                                        BackgroundColor3 = a.Accent,
+                                                        BorderSizePixel = 0,
+                                                        ZIndex = 201,
+                                                        Parent = W,
+                                                    })
+                                                    e(bar, UDim.new(0, 2))
+                                                    local hold = c("Frame", {
+                                                        Position = UDim2.fromOffset(12, 0),
+                                                        Size = UDim2.fromOffset(0, 0),
+                                                        AutomaticSize = Enum.AutomaticSize.XY,
+                                                        BackgroundTransparency = 1,
+                                                        ZIndex = 201,
+                                                        Parent = W,
+                                                    })
+                                                    o(hold, 7, 12, 7, 8)
+                                                    c("UIListLayout", {
+                                                        SortOrder = Enum.SortOrder.LayoutOrder,
+                                                        Padding = UDim.new(0, 1),
+                                                        Parent = hold,
+                                                    })
+                                                    local t1 = d {
+                                                        Size = UDim2.fromOffset(0, 15),
+                                                        AutomaticSize = Enum.AutomaticSize.X,
+                                                        Text = tostring(title),
+                                                        TextSize = 13,
+                                                        FontFace = i.Medium,
+                                                        TextColor3 = a.Text,
+                                                        TextTruncate = Enum.TextTruncate.None,
+                                                        LayoutOrder = 1,
+                                                        ZIndex = 202,
+                                                        Parent = hold,
+                                                    }
+                                                    local t2 = d {
+                                                        Size = UDim2.fromOffset(0, 13),
+                                                        AutomaticSize = Enum.AutomaticSize.X,
+                                                        Text = tostring(sub),
+                                                        TextSize = 11,
+                                                        FontFace = i.Regular,
+                                                        TextColor3 = a.Muted,
+                                                        TextTruncate = Enum.TextTruncate.None,
+                                                        LayoutOrder = 2,
+                                                        ZIndex = 202,
+                                                        Parent = hold,
+                                                    }
+                                                    j.Watermark = W
+                                                    j._wmTitle = t1
+                                                    j._wmSub = t2
                                                 end
                                                 function j:SetWatermark(t, s)
                                                     if j._wmTitle and t ~= nil then
@@ -2456,9 +2517,9 @@ local function l(b, c)
                                                                                         local r = c(k, {Position = UDim2.fromOffset(320, 0), Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, Parent = j})
                                                                                         local v = c("ImageLabel", {Position = UDim2.fromOffset(-20, -20), Size = UDim2.new(1, 40, 1, 40), BackgroundTransparency = 1, Image = t.Shadow, ImageColor3 = Color3.new(0, 0, 0), ImageTransparency = 1, ScaleType = Enum.ScaleType.Slice, SliceCenter = Rect.new(49, 49, 450, 450), ZIndex = 0, Parent = r})
                                                                                         local g = c("CanvasGroup", {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = a.Background, BorderSizePixel = 0, GroupTransparency = 1, Parent = r}) e(g, UDim.new(0, 10))
-                                                                                        local B = h(g, a.Stroke) M(g) x(g, UDim2.fromOffset(280, 140), UDim2.new(1, -8, 0, -12), .8, 90) x(g, UDim2.fromOffset(140, 80), UDim2.new(0, -10, 1, 8), .75, 270)
+                                                                                        local B = h(g, a.Stroke) M(g) x(g, UDim2.fromOffset(180, 90), UDim2.new(1, -6, 0, -8), .88, 90)
                                                                                         local nBar = c("Frame", {Size = UDim2.new(0, 3, 1, 0), BackgroundColor3 = a.Accent, BorderSizePixel = 0, ZIndex = 2, Parent = g}) e(nBar, UDim.new(0, 2))
-                                                                                        local m = c(k, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, Parent = g}) o(m, 16, 16, 14, 24)
+                                                                                        local m = c(k, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, Parent = g}) o(m, 12, 12, 10, 12)
                                                                                         local n = 0
                                                                                         if f.Icon then
                                                                                             y(m, f.Icon, s == a.Text and a.Accent or s, UDim2.new(0, 0, 0, 8)) n = 24
