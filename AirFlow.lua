@@ -361,7 +361,7 @@ local function l(b, c)
                     }
                 end
                 local function B(f, g, i, k)
-                    local d = {Size = UDim2.new(1, 0, 0, i), BackgroundColor3 = a.Surface2, BorderSizePixel = 0, LayoutOrder = f:_nextOrder(), Parent = f.List}
+                    local d = {Size = UDim2.new(0.5, -4, 0, i), BackgroundColor3 = a.Surface2, BorderSizePixel = 0, LayoutOrder = f:_nextOrder(), Parent = f.List}
                     if g == "TextButton" then
                         d.AutoButtonColor = false d.Text = ""
                     end
@@ -402,26 +402,86 @@ local function l(b, c)
                     return self._order
                 end
                 function j:Section(b)
+                    local name, icon
                     if type(b) == "table" then
-                        b = b.Name or b.Title or ""
+                        name = b.Name or b.Title or ""
+                        icon = b.Icon
+                    else
+                        name = b or ""
                     end
-                    local f = c("Frame", {Size = UDim2.new(1, 0, 0, 28), BackgroundTransparency = 1, LayoutOrder = self:_nextOrder(), Parent = self.List})
-                    local e = d {Position = UDim2.fromOffset(2, 8), Size = UDim2.new(0, 0, 0, 16), AutomaticSize = Enum.AutomaticSize.X, Text = string.upper(b), TextSize = 12, TextColor3 = a.Muted, TextTruncate = Enum.TextTruncate.None, Parent = f}
-                    local g = c("Frame", {AnchorPoint = Vector2.new(1, .5), Position = UDim2.new(1, 0, 0, 16), Size = UDim2.new(1, -12, 0, 1), BackgroundColor3 = a.Stroke, BorderSizePixel = 0, Parent = f}) e:GetPropertyChangedSignal "AbsoluteSize":Connect(function() g.Size = UDim2.new(1, -(e.AbsoluteSize.X + 14), 0, 1)
+                    local card = c("Frame", {
+                        Size = UDim2.new(0.5, -4, 0, 0),
+                        AutomaticSize = Enum.AutomaticSize.Y,
+                        BackgroundColor3 = a.Surface2,
+                        BorderSizePixel = 0,
+                        LayoutOrder = self:_nextOrder(),
+                        Parent = self.List,
+                    })
+                    e(card, UDim.new(0, 10))
+                    h(card, a.Stroke)
+                    local header = c("Frame", {
+                        Size = UDim2.new(1, 0, 0, 34),
+                        BackgroundTransparency = 1,
+                        Parent = card,
+                    })
+                    local padH = 12
+                    if icon then
+                        local ic = c("ImageLabel", {
+                            Position = UDim2.fromOffset(12, 9),
+                            Size = UDim2.fromOffset(16, 16),
+                            BackgroundTransparency = 1,
+                            ImageColor3 = a.Accent,
+                            ScaleType = Enum.ScaleType.Fit,
+                            Parent = header,
+                        })
+                        u(ic, icon)
+                        padH = 34
                     end
-                    ) task.defer(function() g.Size = UDim2.new(1, -(e.AbsoluteSize.X + 14), 0, 1)
-                    end
-                    )
-                    return n(self, {}, {Set = function(b, a) e.Text = string.upper(a)
-                        end
-                    }, f, "Section")
+                    d {
+                        Position = UDim2.fromOffset(padH, 0),
+                        Size = UDim2.new(1, -padH - 10, 1, 0),
+                        Text = tostring(name),
+                        TextSize = 14,
+                        FontFace = i.Medium,
+                        TextColor3 = a.Text,
+                        TextXAlignment = Enum.TextXAlignment.Left,
+                        TextTruncate = Enum.TextTruncate.AtEnd,
+                        Parent = header,
+                    }
+                    local line = c("Frame", {
+                        Position = UDim2.fromOffset(10, 34),
+                        Size = UDim2.new(1, -20, 0, 1),
+                        BackgroundColor3 = a.Stroke,
+                        BorderSizePixel = 0,
+                        Parent = card,
+                    })
+                    local body = c("Frame", {
+                        Position = UDim2.fromOffset(0, 35),
+                        Size = UDim2.new(1, 0, 0, 0),
+                        AutomaticSize = Enum.AutomaticSize.Y,
+                        BackgroundTransparency = 1,
+                        Parent = card,
+                    })
+                    o(body, 8, 8, 10, 10)
+                    c("UIListLayout", {
+                        SortOrder = Enum.SortOrder.LayoutOrder,
+                        Padding = UDim.new(0, 6),
+                        Parent = body,
+                    })
+                    self._sectionList = body
+                    self._sectionCard = card
+                    return n(self, {}, {
+                        Set = function(_, title)
+                            -- no-op title setter kept for API compat
+                        end,
+                    }, card, "Section")
                 end
                 function j:Divider()
                     local b = c("Frame", {Size = UDim2.new(1, 0, 0, 1), BackgroundColor3 = a.Stroke, BorderSizePixel = 0, LayoutOrder = self:_nextOrder(), Parent = self.List})
                     return n(self, {}, {}, b, "Divider")
                 end
                 function j:Label(b) b = l(b, {Name = "Text", Title = "Text"})
-                    local c = d {Size = UDim2.new(1, 0, 0, 18), Text = b.Text or "", TextSize = 13, FontFace = i.Regular, TextColor3 = b.Color or a.Muted, LayoutOrder = self:_nextOrder(), Parent = self.List}
+                    local c = d {Size = UDim2.new(1, 0, 0, 18), Text = b.Text or "", TextSize = 13, FontFace = i.Regular, TextColor3 = b.Color or a.Muted, LayoutOrder = self:_nextOrder(), Parent = self._sectionList or self.List}
                     o(c, 2)
                     local e = {Set =
                         function(b, a) c.Text = tostring(a)
@@ -451,7 +511,7 @@ local function l(b, c)
                             return n(self, b, e, c, "Label")
                         end
                         function j:Paragraph(b) b = l(b, {Title = "Name"})
-                            local e = B(self, "Frame", 0, b) e.AutomaticSize = Enum.AutomaticSize.Y o(e, 14, 14, 11, 12) c("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 4), Parent = e}) d {Size = UDim2.new(1, 0, 0, 14), Text = b.Name or "", LayoutOrder = 1, Parent = e}
+                            local e = B(self, "Frame", 0, b) e.Size = UDim2.new(1, 0, 0, 0) e.AutomaticSize = Enum.AutomaticSize.Y o(e, 14, 14, 11, 12) c("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 4), Parent = e}) d {Size = UDim2.new(1, 0, 0, 14), Text = b.Name or "", LayoutOrder = 1, Parent = e}
                             local f = d {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = b.Content or "", TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, TextWrapped = true, TextTruncate = Enum.TextTruncate.None, TextYAlignment = Enum.TextYAlignment.Top, LayoutOrder = 2, Parent = e}
                             return n(self, b, {Set = function(b, a) f.Text = a
                                 end
@@ -2155,7 +2215,7 @@ local function l(b, c)
                                                                                             d {Position = UDim2.fromOffset(24, 44), Size = UDim2.new(1, -72, 0, 16), Text = g.Desc, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, Parent = m}
                                                                                         end
                                                                                         local v = g.Desc and 70 or 58
-                                                                                        local n = c("ScrollingFrame", {Position = UDim2.fromOffset(0, v), Size = UDim2.new(1, 0, 1, -v), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 2, ScrollBarImageColor3 = a.Accent, ScrollBarImageTransparency = .5, AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(), Parent = m}) o(n, 24, 24, 2, 24) c("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 8), Parent = n}) f.List = n
+                                                                                        local n = c("ScrollingFrame", {Position = UDim2.fromOffset(0, v), Size = UDim2.new(1, 0, 1, -v), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 2, ScrollBarImageColor3 = a.Accent, ScrollBarImageTransparency = .5, AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(), Parent = m}) o(n, 24, 24, 2, 24) c("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, Wraps = true, HorizontalAlignment = Enum.HorizontalAlignment.Left, VerticalAlignment = Enum.VerticalAlignment.Top, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 10), Parent = n}) f.List = n
                                                                                         local s, p = as(m, g.Icon or "layout-grid", g.EmptyText or "Nothing here yet"), 0 n.ChildAdded:Connect(function(a) if a:IsA "GuiObject" then
                                                                                                 p += 1 s.Visible = false
                                                                                             end
