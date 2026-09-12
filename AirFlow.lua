@@ -1476,66 +1476,166 @@ local function l(b, c)
                                                 j:_showLoader(k)
                                             end
                                             if not k.NoConfigTab then
-                                                task.defer(function() local ok, err = pcall(function()
-                                                    local cfg = j:Tab {Name = "Config", Icon = "save", Desc = "Save & load"}
-                                                    cfg:Section("Configs")
-                                                    cfg:Paragraph {Name = "Dedicated config page", Content = "Create, load, overwrite, and delete configs. All flagged controls are saved."}
-                                                    local nameBox = cfg:Input {Name = "Config name", Placeholder = "my config", Flag = nil}
-                                                    local status = cfg:Label {Text = "No config selected"}
-                                                    local function refreshList()
-                                                        -- custom list via buttons rebuilt
+                                                task.defer(function()
+                                                    local ok, err = pcall(function()
+                                                        local cfg = j:Tab({
+                                                            Name = "Config",
+                                                            Icon = "save",
+                                                            Desc = "Save & load",
+                                                        })
+                                                        cfg:Section("Configs")
+                                                        cfg:Paragraph({
+                                                            Name = "Dedicated config page",
+                                                            Content = "Create, load, overwrite, and delete configs. All flagged controls are saved.",
+                                                        })
+                                                        local nameBox = cfg:Input({
+                                                            Name = "Config name",
+                                                            Placeholder = "my config",
+                                                        })
+                                                        local status = cfg:Label({
+                                                            Text = "No config selected",
+                                                        })
+                                                        local function readName()
+                                                            local n = nil
+                                                            if nameBox ~= nil then
+                                                                local getter = nameBox.Get
+                                                                if type(getter) == "function" then
+                                                                    n = getter(nameBox)
+                                                                end
+                                                            end
+                                                            if type(n) ~= "string" or n == "" then
+                                                                n = j.ConfigName
+                                                            end
+                                                            return n
+                                                        end
+                                                        cfg:Button({
+                                                            Name = "Save / Overwrite",
+                                                            Desc = "Save all flagged values under the name above",
+                                                            Icon = "save",
+                                                            Style = "Primary",
+                                                            Callback = function()
+                                                                local n = readName()
+                                                                if type(n) ~= "string" or n == "" then
+                                                                    j:Notify({
+                                                                        Title = "Config",
+                                                                        Content = "Enter a name first",
+                                                                        Duration = 2,
+                                                                    })
+                                                                    return
+                                                                end
+                                                                local saveOk, saveErr = j:SaveConfig(n)
+                                                                local msg
+                                                                if saveOk then
+                                                                    msg = 'Saved "' .. n .. '"'
+                                                                else
+                                                                    msg = tostring(saveErr)
+                                                                end
+                                                                j:Notify({
+                                                                    Title = "Config",
+                                                                    Content = msg,
+                                                                    Duration = 2.5,
+                                                                })
+                                                                if status and saveOk then
+                                                                    status:Set("Active: " .. n)
+                                                                end
+                                                            end,
+                                                        })
+                                                        cfg:Button({
+                                                            Name = "Load",
+                                                            Desc = "Load the named config",
+                                                            Icon = "folder-open",
+                                                            Callback = function()
+                                                                local n = readName()
+                                                                if type(n) ~= "string" or n == "" then
+                                                                    j:Notify({
+                                                                        Title = "Config",
+                                                                        Content = "Enter a name first",
+                                                                        Duration = 2,
+                                                                    })
+                                                                    return
+                                                                end
+                                                                local loadOk, loadErr = j:LoadConfig(n)
+                                                                local msg
+                                                                if loadOk then
+                                                                    msg = 'Loaded "' .. n .. '"'
+                                                                else
+                                                                    msg = tostring(loadErr)
+                                                                end
+                                                                j:Notify({
+                                                                    Title = "Config",
+                                                                    Content = msg,
+                                                                    Duration = 2.5,
+                                                                })
+                                                                if status and loadOk then
+                                                                    status:Set("Active: " .. n)
+                                                                end
+                                                            end,
+                                                        })
+                                                        cfg:Button({
+                                                            Name = "Delete",
+                                                            Desc = "Delete the named config",
+                                                            Icon = "trash-2",
+                                                            Callback = function()
+                                                                local n = readName()
+                                                                if type(n) ~= "string" or n == "" then
+                                                                    return
+                                                                end
+                                                                local delOk = j:DeleteConfig(n)
+                                                                local msg
+                                                                if delOk then
+                                                                    msg = 'Deleted "' .. n .. '"'
+                                                                else
+                                                                    msg = "Delete failed"
+                                                                end
+                                                                j:Notify({
+                                                                    Title = "Config",
+                                                                    Content = msg,
+                                                                    Duration = 2,
+                                                                })
+                                                            end,
+                                                        })
+                                                        cfg:Button({
+                                                            Name = "Refresh list",
+                                                            Desc = "Show saved config names",
+                                                            Callback = function()
+                                                                local list = j:ListConfigs() or {}
+                                                                local msg
+                                                                if #list > 0 then
+                                                                    msg = table.concat(list, ", ")
+                                                                else
+                                                                    msg = "None saved"
+                                                                end
+                                                                j:Notify({
+                                                                    Title = "Configs",
+                                                                    Content = msg,
+                                                                    Duration = 3,
+                                                                })
+                                                            end,
+                                                        })
+                                                        cfg:Section("Menu")
+                                                        cfg:Label({
+                                                            Text = "Click the key chip in the sidebar to change the menu bind.",
+                                                        })
+                                                        cfg:Toggle({
+                                                            Name = "Auto-save",
+                                                            Desc = "Save whenever a flagged control changes",
+                                                            Default = j._autoSaveEnabled == true,
+                                                            Callback = function(v)
+                                                                j._autoSaveEnabled = (v == true)
+                                                                j:Notify({
+                                                                    Title = "Auto-save",
+                                                                    Content = v and "On" or "Off",
+                                                                    Duration = 1.5,
+                                                                })
+                                                            end,
+                                                        })
+                                                    end)
+                                                    if not ok then
+                                                        warn("[AirFlow] config tab: " .. tostring(err))
                                                     end
-                                                    cfg:Button {Name = "Save / Overwrite", Desc = "Save all flagged values under the name above", Icon = "save", Style = "Primary", Callback = function()
-                                                            local n = (nameBox and type(nameBox.Get)=="function" and nameBox:Get()) or j.ConfigName
-                                                            if type(n) ~= "string" or n == "" then
-                                                                j:Notify {Title = "Config", Content = "Enter a name first", Duration = 2} return
-                                                            end
-                                                            local ok, err = j:SaveConfig(n)
-                                                            j:Notify {Title = "Config", Content = ok and("Saved \"" .. n .. "\"") or tostring(err), Duration = 2.5}
-                                                            if status then
-                                                                status:Set("Active: " .. n)
-                                                            end
-                                                        end
-                                                    }
-                                                    cfg:Button {Name = "Load", Desc = "Load the named config", Icon = "folder-open", Callback = function()
-                                                            local n = (nameBox and type(nameBox.Get)=="function" and nameBox:Get()) or j.ConfigName
-                                                            if type(n) ~= "string" or n == "" then
-                                                                j:Notify {Title = "Config", Content = "Enter a name first", Duration = 2} return
-                                                            end
-                                                            local ok, err = j:LoadConfig(n)
-                                                            j:Notify {Title = "Config", Content = ok and("Loaded \"" .. n .. "\"") or tostring(err), Duration = 2.5}
-                                                            if status and ok then
-                                                                status:Set("Active: " .. n)
-                                                            end
-                                                        end
-                                                    }
-                                                    cfg:Button {Name = "Delete", Desc = "Delete the named config", Icon = "trash-2", Callback = function()
-                                                            local n = (nameBox and type(nameBox.Get)=="function" and nameBox:Get()) or j.ConfigName
-                                                            if type(n) ~= "string" or n == "" then
-                                                                return
-                                                            end
-                                                            local ok = j:DeleteConfig(n)
-                                                            j:Notify {Title = "Config", Content = ok and("Deleted \"" .. n .. "\"") or "Delete failed", Duration = 2}
-                                                        end
-                                                    }
-                                                    cfg:Button {Name = "Refresh list", Desc = "Print saved config names to console", Callback = function()
-                                                            local list = j:ListConfigs() or {}
-                                                            j:Notify {Title = "Configs", Content = #list > 0 and table.concat(list, ", ") or "None saved", Duration = 3}
-                                                        end
-                                                    }
-                                                    cfg:Section("Menu")
-                                                    cfg:Label {Text = "Click the key chip in the sidebar to change the menu bind."}
-                                                    cfg:Toggle {Name = "Auto-save", Desc = "Save whenever a flagged control changes", Default = j._autoSaveEnabled == true, Callback = function(v) j._autoSaveEnabled = v == true j:Notify {Title = "Auto-save", Content = v and "On" or "Off", Duration = 1.5}
-                                                        end
-                                                    }
-                                                end
-                                                ) if not ok then
-                                                    warn("[AirFlow] config tab: " .. tostring(err))
-                                                end
+                                                end)
                                             end
-                                            )
-                                        end
-                                        return j
+                                            return j
                                     end
                                     f.CreateWindow = f.Window
                                     function f:Notify(b)
