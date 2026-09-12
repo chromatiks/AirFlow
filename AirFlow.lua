@@ -23,8 +23,7 @@ local function l(b, c)
             end
         end
         if a.Range then
-            a.Min = a.Min or a.Range[1]
-                    a.Max = a.Max or a.Range[2]
+            a.Min = a.Min or a.Range[1] a.Max = a.Max or a.Range[2]
         end
         return a
     end
@@ -33,8 +32,7 @@ local function l(b, c)
         if b.Flag then
             f.Flags[b.Flag] = a
             if c then
-                local a = b.Callback
-                                                b.Callback =
+                local a = b.Callback b.Callback =
                 function(...)
                     if type(a) == "function" then
                             a(...)
@@ -1414,9 +1412,9 @@ local function l(b, c)
                                             ) s.Parent = k.Parent or ag() do
                                                 local wmOn = k.Watermark ~= false
                                                 local title = k.WatermarkTitle or k.Name or "AirFlow"
-                                                local sub = k.WatermarkSub or (P(N) .. " · toggle")
+                                                local sub = k.WatermarkSub or(P(N) .. " · toggle")
                                                 if wmOn then
-                                                    local W = c("Frame", {Name = "Watermark", Position = UDim2.fromOffset(14, 14), Size = UDim2.fromOffset(0, 0), AutomaticSize = Enum.AutomaticSize.XY, BackgroundColor3 = a.Background, BorderSizePixel = 0, ZIndex = 100, ClipsDescendants = true, Parent = s}) e(W, UDim.new(0, 8)) h(W, a.Stroke) M(W) x(W, UDim2.fromOffset(160, 70), UDim2.new(1, 10, 0.5, 0), .82, 90) x(W, UDim2.fromOffset(90, 50), UDim2.new(0, -8, 1, 6), .78, 270)
+                                                    local W = c("Frame", {Name = "Watermark", Position = UDim2.fromOffset(14, 14), Size = UDim2.fromOffset(0, 0), AutomaticSize = Enum.AutomaticSize.XY, BackgroundColor3 = a.Background, BorderSizePixel = 0, ZIndex = 100, ClipsDescendants = true, Parent = s}) e(W, UDim.new(0, 8)) h(W, a.Stroke) M(W) x(W, UDim2.fromOffset(160, 70), UDim2.new(1, 10, .5, 0), .82, 90) x(W, UDim2.fromOffset(90, 50), UDim2.new(0, -8, 1, 6), .78, 270)
                                                     local bar = c("Frame", {Size = UDim2.new(0, 3, 1, 0), BackgroundColor3 = a.Accent, BorderSizePixel = 0, ZIndex = 2, Parent = W}) e(bar, UDim.new(0, 2))
                                                     local hold = c("Frame", {Position = UDim2.fromOffset(10, 0), Size = UDim2.fromOffset(0, 0), AutomaticSize = Enum.AutomaticSize.XY, BackgroundTransparency = 1, Parent = W}) o(hold, 8, 12, 6, 6) c("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 1), Parent = hold})
                                                     local t1 = d {Size = UDim2.fromOffset(0, 16), AutomaticSize = Enum.AutomaticSize.X, Text = tostring(title), TextSize = 13, FontFace = i.Medium, TextColor3 = a.Text, TextTruncate = Enum.TextTruncate.None, LayoutOrder = 1, Parent = hold}
@@ -1436,1042 +1434,1031 @@ local function l(b, c)
                                                         j.Watermark.Visible = v ~= false
                                                     end
                                                 end
-                                                end
-                                            O.Scale = .9
-                                            n.GroupTransparency = 1
-                                            Q.ImageTransparency = 1
-                                            j.BodyStroke.Transparency = 1
-                                            z.Visible = false
-                                            j:_fitToScreen(true)
-                                            table.insert(j._connections, s:GetPropertyChangedSignal(I):Connect(function()
-                                                j:_fitToScreen()
-                                                j:_clampToScreen()
-                                                end
-                                                ))
-                                                if k.OpenButton ~= nil and k.OpenButton ~= false or k.OpenButton == nil and m then
-                                                    j:_createOpenButton(type(k.OpenButton) == A and k.OpenButton or {})
-                                                end
-                                                j._introDone = false table.insert(f.Windows, j)
-                                                if k.Home then
-                                                    j:_buildHome(type(k.Home) == A and k.Home or {})
-                                                end
-                                                local r = k.Loading
-                                                if type(r) == A then
-                                                    k.LoadingDuration = r.Duration or k.LoadingDuration k.LoadingText = r.Text or r.Subtitle or k.LoadingText k.LoadingSteps = r.Steps or k.LoadingSteps k.LoadingTitle = r.Title or k.LoadingTitle r = r.Enabled ~= false
-                                                end
-                                                if r == false then
-                                                    task.defer(function() j:_playIntro()
-                                                    end
-                                                    )
-                                                else
-                                                    j:_showLoader(k)
-                                                end
-                                                if not k.NoConfigTab then
-                                                    task.defer(function() local ok, err = pcall(function()
-                                                        local cfg = j:Tab({Name = "Config", Icon = "save", Desc = "Save & load"})
-                                                        cfg:Section("Profile")
-                                                        local nameBox = cfg:Input({Name = "Config name", Placeholder = "my config", Default = "default"})
-                                                        local status = cfg:Label({Text = "No config loaded"})
-                                                        local function readName()
-                                                            local n = nil
-                                                            if nameBox then
-                                                                local g = nameBox.Get
-                                                                if type(g) == "function" then
-                                                                        n = g(nameBox)
-                                                                    end
-                                                                end
-                                                                if type(n) ~= "string" or n == "" then
-                                                                    n = j.ConfigName or "default"
-                                                                end
-                                                                return n
-                                                            end
-                                                            cfg:Section("Actions")
-                                                            cfg:Button({Name = "Save", Desc = "Write all flagged options", Icon = "save", Style = "Primary", Callback = function()
-                                                                    local n = readName()
-                                                                    local saveOk, saveErr = j:SaveConfig(n)
-                                                                    if saveOk then
-                                                                        status:Set("Active: " .. n)
-                                                                        j:Notify({Title = "Config", Content = 'Saved "' .. n .. '"', Duration = 2.5})
-                                                                    else
-                                                                        j:Notify({Title = "Config", Content = tostring(saveErr), Duration = 2.5})
-                                                                    end
-                                                                end
-                                                            })
-                                                            cfg:Button({Name = "Load", Desc = "Load by name", Icon = "folder-open", Callback = function()
-                                                                    local n = readName()
-                                                                    local loadOk, loadErr = j:LoadConfig(n)
-                                                                    if loadOk then
-                                                                        status:Set("Active: " .. n)
-                                                                        j:Notify({Title = "Config", Content = 'Loaded "' .. n .. '"', Duration = 2.5})
-                                                                    else
-                                                                        j:Notify({Title = "Config", Content = tostring(loadErr), Duration = 2.5})
-                                                                    end
-                                                                end
-                                                            })
-                                                            cfg:Button({Name = "Delete", Desc = "Delete by name", Icon = "trash-2", Callback = function()
-                                                                    local n = readName()
-                                                                    local delOk = j:DeleteConfig(n)
-                                                                    j:Notify({Title = "Config", Content = delOk and('Deleted "' .. n .. '"') or "Delete failed", Duration = 2})
-                                                                end
-                                                            })
-                                                            cfg:Button({Name = "List saved", Desc = "Show config names", Icon = "list", Callback = function()
-                                                                    local list = j:ListConfigs() or {}
-                                                                    j:Notify({Title = "Configs", Content = #list > 0 and table.concat(list, ", ") or "None saved", Duration = 3})
-                                                                end
-                                                            })
-                                                            cfg:Section("Options")
-                                                            cfg:Toggle({Name = "Auto-save", Desc = "Save when flagged controls change", Default = j._autoSaveEnabled == true, Callback = function(v)
-                                                                    j._autoSaveEnabled = v == true
-                                                                    j:Notify({Title = "Auto-save", Content = v and "On" or "Off", Duration = 1.5})
-                                                                end
-                                                            })
-                                                            cfg:Paragraph({Name = "Flags", Content = "Controls with Flag are included in save/load."})
-                                                        end
-                                                        ) if not ok then
-                                                            warn("[AirFlow] config tab: " .. tostring(err))
-                                                        end
-                                                    end
-                                                    )
-                                                end
-                                                return j
                                             end
-                                            f.CreateWindow = f.Window
-                                            function f:Notify(b)
-                                                local a = f.Windows[#f.Windows]
-                                                if a then
-                                                    return a:Notify(b)
-                                                end
-                                            end
-                                            function f:Confirm(b)
-                                                local a = f.Windows[#f.Windows]
-                                                if a then
-                                                    return a:Confirm(b)
-                                                end
-                                            end
-                                            function f:Dialog(b)
-                                                local a = f.Windows[#f.Windows]
-                                                if a then
-                                                    return a:Dialog(b)
-                                                end
-                                            end
-                                            local function Q(a, c)
-                                                local b, d = c.AbsolutePosition, c.AbsoluteSize
-                                                return a.X >= b.X and a.X <= b.X + d.X and a.Y >= b.Y and a.Y <= b.Y + d.Y
-                                            end
-                                            local function ao(c, b, d)
-                                                local a = c
-                                                while a and a ~= b and a:IsA "GuiObject" do
-                                                    if not a.Visible then
-                                                        return false
-                                                    end
-                                                    local c = a.Parent
-                                                    if c and c ~= b and c:IsA "GuiObject" and(c.ClipsDescendants or c:IsA "ScrollingFrame") and not Q(d, c) then
-                                                        return false
-                                                    end
-                                                    a = c
-                                                end
-                                                return true
-                                            end
-                                            function g:_refreshControls()
-                                                local a = {}
-                                                for c, b in ipairs(self.Body:GetDescendants()) do
-                                                    if b:IsA "GuiButton" or b:IsA "TextBox" or b:GetAttribute "NoDrag" then
-                                                        table.insert(a, b)
-                                                    end
-                                                end
-                                                self._controls = a self._controlsDirty = false
-                                            end
-                                            function g:_overControl(a)
-                                                if self._dialog then
-                                                    return true
-                                                end
-                                                if self._controlsDirty then
-                                                    self:_refreshControls()
-                                                end
-                                                for c, b in ipairs(self._controls) do
-                                                    if b.Parent and Q(a, b) and ao(b, self.Body, a) then
-                                                        return true
-                                                    end
-                                                end
-                                                return false
-                                            end
-                                            function g:_enableDrag()
-                                                local a = false
-                                                local c = Vector2.zero
-                                                local b
-                                                local function d()
-                                                    local a = self.Root
-                                                    return a.AbsolutePosition + a.AbsoluteSize * a.AnchorPoint - self.Gui.AbsolutePosition
-                                                end
-                                                table.insert(self._connections, q.InputBegan:Connect(function(e) if not p(e) then
-                                                        return
-                                                    end
-                                                    if not self.Open or not self.Root.Visible then
-                                                        return
-                                                    end
-                                                    local b = r() if not Q(b, self.Body) or self:_overControl(b) then
-                                                        return
-                                                    end
-                                                    a = true c = b - d()
-                                                end
-                                                )) table.insert(self._connections, q.InputEnded:Connect(function(c) if not a then
-                                                        return
-                                                    end
-                                                    if p(c) then
-                                                        a, b = false, nil self:_clampToScreen()
-                                                    end
-                                                end
-                                                )) table.insert(self._frameSteps, function(f) if not a then
-                                                        return
-                                                    end
-                                                    b = r() - c local g = d() local h = 1 - math.exp(-f * 45) local e = g:Lerp(b, h) self.Root.Position = UDim2.fromOffset(e.X, e.Y)
-                                                end
-                                                )
-                                            end
-                                            local function ab(a, d, e)
-                                                if not a.Visible and not e then
-                                                    return
-                                                end
-                                                a.Visible = false task.delay(d, function() if not a.Parent then
-                                                        return
-                                                    end
-                                                    local d = c("UIScale", {Scale = .94, Parent = a}) a.Visible = true b(d, {Scale = 1}, .4, Enum.EasingStyle.Back) task.delay(.4, function() d:Destroy()
-                                                    end
-                                                    )
-                                                end
-                                                )
-                                            end
-                                            function g:_revealCards(a, c)
-                                                if a._revealed then
-                                                    return
-                                                end
-                                                a._revealed = true
-                                                local b = 0
-                                                for d, a in ipairs(a.List:GetChildren()) do
-                                                    if a:IsA "GuiObject" then
-                                                        ab(a, (c or 0) + b * .035) b += 1
-                                                    end
-                                                end
-                                            end
-                                            function g:_playIntro(c)
-                                                if self._introDone then
-                                                    return
-                                                end
-                                                self._introDone = true task.delay(1, function() self._autoSaveReady = true
-                                                end
-                                                )
-                                                local a, d, e, f = self.Root, self.Body, self.Shadow, self.Scale
-                                                if self.CurrentTab then
-                                                    self:_revealCards(self.CurrentTab, c and .15 or .25)
-                                                end
-                                                a.Visible = true
-                                                if c then
-                                                    f.Scale = self._fitScale or 1 a.Position = UDim2.fromScale(.5, .5) b(d, {GroupTransparency = 0}, .3) b(self.BodyStroke, {Transparency = 0}, .3) b(e, {ImageTransparency = .6}, .3)
-                                                else
-                                                    a.Position = UDim2.new(.5, 0, .5, 24) b(f, {Scale = self._fitScale or 1}, .5, Enum.EasingStyle.Back) b(a, {Position = UDim2.fromScale(.5, .5)}, .5, Enum.EasingStyle.Quint) b(d, {GroupTransparency = 0}, .35) b(self.BodyStroke, {Transparency = 0}, .35)
-                                                end
-                                                if not c then
-                                                    b(e, {ImageTransparency = .6}, .5)
-                                                end
-                                                for a, b in ipairs(self.Tabs) do
-                                                    ab(b._button, .1 + a * .05, true)
-                                                end
-                                                self.Indicator.Visible = false task.delay(.15 + #self.Tabs * .05, function() if self.CurrentTab then
-                                                        self:_placeIndicator(self.CurrentTab)
-                                                    end
-                                                end
-                                                )
-                                            end
-                                            function g:_showLoader(g)
-                                                local j = "Frame"
-                                                local m = g.LoadingDuration or 1.6
-                                                local w = self.Gui
-                                                local f = c("CanvasGroup", {AnchorPoint = Vector2.new(.5, .5), Position = UDim2.new(.5, 0, .5, 16), Size = UDim2.fromOffset(300, 132), BackgroundColor3 = a.Background, BorderSizePixel = 0, GroupTransparency = 1, ZIndex = 10, Parent = w})
-                                                local y = e(f, UDim.new(0, 12))
-                                                local z = h(f, a.Stroke, 1) M(f) x(f, UDim2.fromOffset(320, 140), UDim2.new(1, -20, 0, -20), .85, 90) x(f, UDim2.fromOffset(240, 100), UDim2.new(0, 10, 1, 10), .9, 270)
-                                                local o = c("UIScale", {Scale = .92, Parent = f})
-                                                local p = c("ImageLabel", {Position = UDim2.fromOffset(-25, -25), Size = UDim2.new(1, 50, 1, 50), BackgroundTransparency = 1, Image = t.Shadow, ImageColor3 = Color3.new(0, 0, 0), ImageTransparency = 1, ScaleType = Enum.ScaleType.Slice, SliceCenter = Rect.new(49, 49, 450, 450), ZIndex = 0, Parent = f})
-                                                local q = c(j, {Position = UDim2.fromOffset(24, 26), Size = UDim2.fromOffset(40, 40), BackgroundTransparency = 1, Parent = f})
-                                                local r = c("ImageLabel", {AnchorPoint = Vector2.new(.5, .5), Position = UDim2.fromScale(.5, .5), Size = UDim2.fromScale(.5, .5), Rotation = -14, BackgroundTransparency = 1, ImageColor3 = a.Accent, ImageTransparency = 1, ScaleType = Enum.ScaleType.Fit, Parent = q}) u(r, g.Icon or t.Logo) task.delay(.15, function() b(r, {Size = UDim2.fromScale(.85, .85), Rotation = 0, ImageTransparency = 0}, .6, Enum.EasingStyle.Back)
-                                                end
-                                                ) d {Position = UDim2.fromOffset(78, 30), Size = UDim2.new(1, -100, 0, 22), Text = g.LoadingTitle or g.Title or "Airflow", TextSize = 20, Parent = f}
-                                                local A = d {Position = UDim2.fromOffset(78, 52), Size = UDim2.new(1, -100, 0, 16), Text = g.LoadingText or g.Subtitle or "Loading", TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, Parent = f}
-                                                local k = c(j, {Position = UDim2.new(0, 24, 1, -30), Size = UDim2.new(1, -48, 0, 4), BackgroundColor3 = a.Surface3, BorderSizePixel = 0, ClipsDescendants = true, Parent = f}) e(k, UDim.new(1, 0))
-                                                local l = c(j, {Size = UDim2.fromScale(0, 1), BackgroundColor3 = a.Accent, BorderSizePixel = 0, Parent = k}) e(l, UDim.new(1, 0))
-                                                local n = c(j, {Position = UDim2.fromScale(-.4, 0), Size = UDim2.fromScale(.4, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = .6, BorderSizePixel = 0, ZIndex = 2, Parent = k}) c("UIGradient", {Transparency = NumberSequence.new {NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(.5, 0), NumberSequenceKeypoint.new(1, 1)}, Parent = n}) b(f, {GroupTransparency = 0, Position = UDim2.fromScale(.5, .5)}, .4, Enum.EasingStyle.Quint) b(o, {Scale = 1}, .5, Enum.EasingStyle.Back) b(p, {ImageTransparency = .6}, .4)
-                                                local s = T:Create(n, TweenInfo.new(1.1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1), {Position = UDim2.fromScale(1, 0)}) s:Play() b(l, {Size = UDim2.fromScale(.85, 1)}, m * .8, Enum.EasingStyle.Quart) task.spawn(I)
-                                                local v = g.LoadingSteps or {"Preparing interface", "Loading icons", "Almost there"}
-                                                for a, b in ipairs(v) do
-                                                    task.delay(m * (a - 1) / #v, function() if f.Parent then
-                                                            A.Text = b
-                                                        end
-                                                    end
-                                                    )
-                                                end
-                                                task.delay(m, function() b(l, {Size = UDim2.fromScale(1, 1)}, .25, Enum.EasingStyle.Quint) task.delay(.25, function() s:Cancel() for c, a in ipairs(f:GetChildren()) do
-                                                        if a:IsA "TextLabel" then
-                                                            b(a, {TextTransparency = 1}, .15)
-                                                        end
-                                                    end
-                                                    for c, a in ipairs(q:GetChildren()) do
-                                                        b(a, {ImageTransparency = 1}, .15)
-                                                    end
-                                                    b(k, {BackgroundTransparency = 1}, .15) b(l, {BackgroundTransparency = 1}, .15) b(n, {BackgroundTransparency = 1}, .1) local a = self._fitScale or 1 local c = self.Root.Size b(f, {Size = UDim2.fromOffset(c.X.Offset * a, c.Y.Offset * a), Position = UDim2.fromScale(.5, .5)}, .5, Enum.EasingStyle.Quint) b(y, {CornerRadius = UDim.new(0, 10)}, .5, Enum.EasingStyle.Quint) b(o, {Scale = 1}, .5, Enum.EasingStyle.Quint) task.delay(.28, function() self:_playIntro(true) b(f, {GroupTransparency = 1}, .25) b(z, {Transparency = 1}, .2) b(p, {ImageTransparency = 1}, .2)
-                                                    end
-                                                    ) task.delay(.6, function() f:Destroy()
-                                                    end
-                                                    )
-                                                end
-                                                )
-                                            end
-                                            )
-                                        end
-                                        function g:_fitToScreen(d)
-                                            local a = self.Gui.AbsoluteSize
-                                            if a.X == 0 or a.Y == 0 then
-                                                return
-                                            end
-                                            local c = self.Root.Size
-                                            local e = math.min(1, (a.X - 24) / math.max(c.X.Offset, 1), (a.Y - 24) / math.max(c.Y.Offset, 1)) self._fitScale = math.max(e, .45)
-                                            if self._introDone and self.Open then
-                                                if d then
-                                                    self.Scale.Scale = self._fitScale
-                                                else
-                                                    b(self.Scale, {Scale = self._fitScale}, .2)
-                                                end
-                                            end
-                                        end
-                                        function g:_clampToScreen()
-                                            if not self.KeepOnScreen then
-                                                return
-                                            end
-                                            local a = self.Gui.AbsoluteSize
-                                            local d = self.Root
-                                            local c = d.AbsoluteSize / 2
-                                            local e = d.AbsolutePosition + c - self.Gui.AbsolutePosition
-                                            local f = Vector2.new(math.clamp(e.X, math.min(c.X, a.X / 2), math.max(a.X - c.X, a.X / 2)), math.clamp(e.Y, math.min(c.Y, a.Y / 2), math.max(a.Y - c.Y, a.Y / 2)))
-                                            if(f - e).Magnitude > .5 then
-                                                b(d, {Position = UDim2.fromOffset(f.X, f.Y)}, .25, Enum.EasingStyle.Quint)
-                                            end
-                                        end
-                                        function g:_createOpenButton(j)
-                                            local f = self.Gui
-                                            local b = c("TextButton", {AnchorPoint = Vector2.new(.5, 0), Position = UDim2.new(.5, 0, 0, 14), Size = UDim2.fromOffset(0, 40), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = a.Background, BorderSizePixel = 0, Text = "", AutoButtonColor = false, ZIndex = 30, Parent = f}) e(b, UDim.new(1, 0)) h(b, a.Stroke) o(b, 12, 16)
-                                            local l = c("ImageLabel", {AnchorPoint = Vector2.new(0, .5), Position = UDim2.new(0, 0, .5, 0), Size = UDim2.fromOffset(20, 20), BackgroundTransparency = 1, ImageColor3 = a.Accent, ScaleType = Enum.ScaleType.Fit, ZIndex = 31, Parent = b}) u(l, j.Icon or t.Logo) d {Position = UDim2.fromOffset(28, 0), Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = j.Title or "Airflow", TextSize = 13, TextTruncate = Enum.TextTruncate.None, ZIndex = 31, Parent = b}
-                                            self.OpenButton = b
-                                            local g, i = false, false
-                                            local k = Vector2.zero b.InputBegan:Connect(function(a) if p(a) then
-                                                    g, i = true, false k = r() - b.AbsolutePosition
-                                                end
-                                            end
-                                            ) table.insert(self._connections, q.InputChanged:Connect(function(a) if not g then
-                                                    return
-                                                end
-                                                if N(a) then
-                                                    local a = r() - k - f.AbsolutePosition if(a - (b.AbsolutePosition - f.AbsolutePosition)).Magnitude > 3 then
-                                                        i = true
-                                                    end
-                                                    b.AnchorPoint = Vector2.new(0, 0) b.Position = UDim2.fromOffset(math.clamp(a.X, 0, math.max(f.AbsoluteSize.X - b.AbsoluteSize.X, 0)), math.clamp(a.Y, 0, math.max(f.AbsoluteSize.Y - b.AbsoluteSize.Y, 0)))
-                                                end
-                                            end
-                                            )) table.insert(self._connections, q.InputEnded:Connect(function(a) if g and p(a) then
-                                                    g = false if not i then
-                                                        self:Toggle()
-                                                    end
-                                                end
+                                            O.Scale = .9 n.GroupTransparency = 1 Q.ImageTransparency = 1 j.BodyStroke.Transparency = 1 z.Visible = false j:_fitToScreen(true) table.insert(j._connections, s:GetPropertyChangedSignal(I):Connect(function() j:_fitToScreen() j:_clampToScreen()
                                             end
                                             ))
-                                        end
-                                        function g:_enableResize(i)
-                                            local j = self.MaxSize or Vector2.new(math.huge, math.huge)
-                                            local f = c("Frame", {AnchorPoint = Vector2.new(.5, .5), Position = UDim2.new(1, 4, 1, 4), Size = UDim2.fromOffset(32, 32), BackgroundTransparency = 1, Active = true, ZIndex = 20, Parent = self.Root})
-                                            local g, d = c("ImageLabel", {AnchorPoint = Vector2.new(.5, .5), Position = UDim2.new(.5, -16, .5, -16), Size = UDim2.fromOffset(96, 96), BackgroundTransparency = 1, Image = "rbxassetid://120997033468887", ImageColor3 = a.Accent, ImageTransparency = .8, ZIndex = 20, Parent = f}), false
-                                            local h = self.Root.Size
-                                            local k = Vector2.zero
-                                            local e f.InputBegan:Connect(function(a) if p(a) then
-                                                    d = true h = self.Root.Size k = r() b(g, {ImageTransparency = .35}, .1)
-                                                end
+                                            if k.OpenButton ~= nil and k.OpenButton ~= false or k.OpenButton == nil and m then
+                                                j:_createOpenButton(type(k.OpenButton) == A and k.OpenButton or {})
                                             end
-                                            ) f.MouseEnter:Connect(function() if not d then
-                                                    b(g, {ImageTransparency = .35}, .1)
-                                                end
+                                            j._introDone = false table.insert(f.Windows, j)
+                                            if k.Home then
+                                                j:_buildHome(type(k.Home) == A and k.Home or {})
                                             end
-                                            ) f.MouseLeave:Connect(function() if not d then
-                                                    b(g, {ImageTransparency = .8}, .17)
-                                                end
+                                            local r = k.Loading
+                                            if type(r) == A then
+                                                k.LoadingDuration = r.Duration or k.LoadingDuration k.LoadingText = r.Text or r.Subtitle or k.LoadingText k.LoadingSteps = r.Steps or k.LoadingSteps k.LoadingTitle = r.Title or k.LoadingTitle r = r.Enabled ~= false
                                             end
-                                            ) table.insert(self._connections, q.InputEnded:Connect(function(a) if d and p(a) then
-                                                    d = false b(g, {ImageTransparency = .8}, .17) if e then
-                                                        self.Root.Size = UDim2.fromOffset(e.X, e.Y) e = nil
+                                            if r == false then
+                                                task.defer(function() j:_playIntro()
+                                                end
+                                                )
+                                            else
+                                                j:_showLoader(k)
+                                            end
+                                            if not k.NoConfigTab then
+                                                task.defer(function() local ok, err = pcall(function()
+                                                    local cfg = j:Tab({Name = "Config", Icon = "save", Desc = "Save & load"})
+                                                    cfg:Section("Profile")
+                                                    local nameBox = cfg:Input({Name = "Config name", Placeholder = "my config", Default = "default"})
+                                                    local status = cfg:Label({Text = "No config loaded"})
+                                                    local function readName()
+                                                        local n = nil
+                                                        if nameBox then
+                                                            local g = nameBox.Get if type(g) == "function" then
+                                                                    n = g(nameBox)
+                                                                end
+                                                            end
+                                                            if type(n) ~= "string" or n == "" then
+                                                                n = j.ConfigName or "default"
+                                                            end
+                                                            return n
+                                                        end
+                                                        cfg:Section("Actions")
+                                                        cfg:Button({Name = "Save", Desc = "Write all flagged options", Icon = "save", Style = "Primary", Callback = function()
+                                                                local n = readName()
+                                                                local saveOk, saveErr = j:SaveConfig(n)
+                                                                if saveOk then
+                                                                    status:Set("Active: " .. n) j:Notify({Title = "Config", Content = 'Saved "' .. n .. '"', Duration = 2.5})
+                                                                else
+                                                                    j:Notify({Title = "Config", Content = tostring(saveErr), Duration = 2.5})
+                                                                end
+                                                            end
+                                                        })
+                                                        cfg:Button({Name = "Load", Desc = "Load by name", Icon = "folder-open", Callback = function()
+                                                                local n = readName()
+                                                                local loadOk, loadErr = j:LoadConfig(n)
+                                                                if loadOk then
+                                                                    status:Set("Active: " .. n) j:Notify({Title = "Config", Content = 'Loaded "' .. n .. '"', Duration = 2.5})
+                                                                else
+                                                                    j:Notify({Title = "Config", Content = tostring(loadErr), Duration = 2.5})
+                                                                end
+                                                            end
+                                                        })
+                                                        cfg:Button({Name = "Delete", Desc = "Delete by name", Icon = "trash-2", Callback = function()
+                                                                local n = readName()
+                                                                local delOk = j:DeleteConfig(n)
+                                                                j:Notify({Title = "Config", Content = delOk and('Deleted "' .. n .. '"') or "Delete failed", Duration = 2})
+                                                            end
+                                                        })
+                                                        cfg:Button({Name = "List saved", Desc = "Show config names", Icon = "list", Callback = function()
+                                                                local list = j:ListConfigs() or {}
+                                                                j:Notify({Title = "Configs", Content = #list > 0 and table.concat(list, ", ") or "None saved", Duration = 3})
+                                                            end
+                                                        })
+                                                        cfg:Section("Options")
+                                                        cfg:Toggle({Name = "Auto-save", Desc = "Save when flagged controls change", Default = j._autoSaveEnabled == true, Callback = function(v)
+                                                                j._autoSaveEnabled = v == true
+                                                                j:Notify({Title = "Auto-save", Content = v and "On" or "Off", Duration = 1.5})
+                                                            end
+                                                        })
+                                                        cfg:Paragraph({Name = "Flags", Content = "Controls with Flag are included in save/load."})
                                                     end
-                                                    self:_fitToScreen() self:_clampToScreen()
+                                                    ) if not ok then
+                                                        warn("[AirFlow] config tab: " .. tostring(err))
+                                                    end
+                                                end
+                                                )
+                                            end
+                                            return j
+                                        end
+                                        f.CreateWindow = f.Window
+                                        function f:Notify(b)
+                                            local a = f.Windows[#f.Windows]
+                                            if a then
+                                                return a:Notify(b)
+                                            end
+                                        end
+                                        function f:Confirm(b)
+                                            local a = f.Windows[#f.Windows]
+                                            if a then
+                                                return a:Confirm(b)
+                                            end
+                                        end
+                                        function f:Dialog(b)
+                                            local a = f.Windows[#f.Windows]
+                                            if a then
+                                                return a:Dialog(b)
+                                            end
+                                        end
+                                        local function Q(a, c)
+                                            local b, d = c.AbsolutePosition, c.AbsoluteSize
+                                            return a.X >= b.X and a.X <= b.X + d.X and a.Y >= b.Y and a.Y <= b.Y + d.Y
+                                        end
+                                        local function ao(c, b, d)
+                                            local a = c
+                                            while a and a ~= b and a:IsA "GuiObject" do
+                                                if not a.Visible then
+                                                    return false
+                                                end
+                                                local c = a.Parent
+                                                if c and c ~= b and c:IsA "GuiObject" and(c.ClipsDescendants or c:IsA "ScrollingFrame") and not Q(d, c) then
+                                                    return false
+                                                end
+                                                a = c
+                                            end
+                                            return true
+                                        end
+                                        function g:_refreshControls()
+                                            local a = {}
+                                            for c, b in ipairs(self.Body:GetDescendants()) do
+                                                if b:IsA "GuiButton" or b:IsA "TextBox" or b:GetAttribute "NoDrag" then
+                                                    table.insert(a, b)
                                                 end
                                             end
-                                            )) table.insert(self._frameSteps, function(f) if not d then
+                                            self._controls = a self._controlsDirty = false
+                                        end
+                                        function g:_overControl(a)
+                                            if self._dialog then
+                                                return true
+                                            end
+                                            if self._controlsDirty then
+                                                self:_refreshControls()
+                                            end
+                                            for c, b in ipairs(self._controls) do
+                                                if b.Parent and Q(a, b) and ao(b, self.Body, a) then
+                                                    return true
+                                                end
+                                            end
+                                            return false
+                                        end
+                                        function g:_enableDrag()
+                                            local a = false
+                                            local c = Vector2.zero
+                                            local b
+                                            local function d()
+                                                local a = self.Root
+                                                return a.AbsolutePosition + a.AbsoluteSize * a.AnchorPoint - self.Gui.AbsolutePosition
+                                            end
+                                            table.insert(self._connections, q.InputBegan:Connect(function(e) if not p(e) then
                                                     return
                                                 end
-                                                local b = (r() - k) / self.Scale.Scale e = Vector2.new(math.clamp(h.X.Offset + b.X * 2, i.X, j.X), math.clamp(h.Y.Offset + b.Y * 2, i.Y, j.Y)) local c = Vector2.new(self.Root.Size.X.Offset, self.Root.Size.Y.Offset) local g = 1 - math.exp(-f * 35) local a = c:Lerp(e, g) a = Vector2.new(math.floor(a.X + .5), math.floor(a.Y + .5)) if a ~= c then
-                                                    self.Root.Size = UDim2.fromOffset(a.X, a.Y)
+                                                if not self.Open or not self.Root.Visible then
+                                                    return
+                                                end
+                                                local b = r() if not Q(b, self.Body) or self:_overControl(b) then
+                                                    return
+                                                end
+                                                a = true c = b - d()
+                                            end
+                                            )) table.insert(self._connections, q.InputEnded:Connect(function(c) if not a then
+                                                    return
+                                                end
+                                                if p(c) then
+                                                    a, b = false, nil self:_clampToScreen()
+                                                end
+                                            end
+                                            )) table.insert(self._frameSteps, function(f) if not a then
+                                                    return
+                                                end
+                                                b = r() - c local g = d() local h = 1 - math.exp(-f * 45) local e = g:Lerp(b, h) self.Root.Position = UDim2.fromOffset(e.X, e.Y)
+                                            end
+                                            )
+                                        end
+                                        local function ab(a, d, e)
+                                            if not a.Visible and not e then
+                                                return
+                                            end
+                                            a.Visible = false task.delay(d, function() if not a.Parent then
+                                                    return
+                                                end
+                                                local d = c("UIScale", {Scale = .94, Parent = a}) a.Visible = true b(d, {Scale = 1}, .4, Enum.EasingStyle.Back) task.delay(.4, function() d:Destroy()
+                                                end
+                                                )
+                                            end
+                                            )
+                                        end
+                                        function g:_revealCards(a, c)
+                                            if a._revealed then
+                                                return
+                                            end
+                                            a._revealed = true
+                                            local b = 0
+                                            for d, a in ipairs(a.List:GetChildren()) do
+                                                if a:IsA "GuiObject" then
+                                                    ab(a, (c or 0) + b * .035) b += 1
+                                                end
+                                            end
+                                        end
+                                        function g:_playIntro(c)
+                                            if self._introDone then
+                                                return
+                                            end
+                                            self._introDone = true task.delay(1, function() self._autoSaveReady = true
+                                            end
+                                            )
+                                            local a, d, e, f = self.Root, self.Body, self.Shadow, self.Scale
+                                            if self.CurrentTab then
+                                                self:_revealCards(self.CurrentTab, c and .15 or .25)
+                                            end
+                                            a.Visible = true
+                                            if c then
+                                                f.Scale = self._fitScale or 1 a.Position = UDim2.fromScale(.5, .5) b(d, {GroupTransparency = 0}, .3) b(self.BodyStroke, {Transparency = 0}, .3) b(e, {ImageTransparency = .6}, .3)
+                                            else
+                                                a.Position = UDim2.new(.5, 0, .5, 24) b(f, {Scale = self._fitScale or 1}, .5, Enum.EasingStyle.Back) b(a, {Position = UDim2.fromScale(.5, .5)}, .5, Enum.EasingStyle.Quint) b(d, {GroupTransparency = 0}, .35) b(self.BodyStroke, {Transparency = 0}, .35)
+                                            end
+                                            if not c then
+                                                b(e, {ImageTransparency = .6}, .5)
+                                            end
+                                            for a, b in ipairs(self.Tabs) do
+                                                ab(b._button, .1 + a * .05, true)
+                                            end
+                                            self.Indicator.Visible = false task.delay(.15 + #self.Tabs * .05, function() if self.CurrentTab then
+                                                    self:_placeIndicator(self.CurrentTab)
                                                 end
                                             end
                                             )
                                         end
-                                        local function R(a, b)
-                                            return a.ConfigFolder .. "/" .. b .. ".json"
-                                        end
-                                        local function S()
-                                            local a = "function"
-                                                return type(writefile) == a and type(readfile) == a and type(isfile) == a
+                                        function g:_showLoader(g)
+                                            local j = "Frame"
+                                            local m = g.LoadingDuration or 1.6
+                                            local w = self.Gui
+                                            local f = c("CanvasGroup", {AnchorPoint = Vector2.new(.5, .5), Position = UDim2.new(.5, 0, .5, 16), Size = UDim2.fromOffset(300, 132), BackgroundColor3 = a.Background, BorderSizePixel = 0, GroupTransparency = 1, ZIndex = 10, Parent = w})
+                                            local y = e(f, UDim.new(0, 12))
+                                            local z = h(f, a.Stroke, 1) M(f) x(f, UDim2.fromOffset(320, 140), UDim2.new(1, -20, 0, -20), .85, 90) x(f, UDim2.fromOffset(240, 100), UDim2.new(0, 10, 1, 10), .9, 270)
+                                            local o = c("UIScale", {Scale = .92, Parent = f})
+                                            local p = c("ImageLabel", {Position = UDim2.fromOffset(-25, -25), Size = UDim2.new(1, 50, 1, 50), BackgroundTransparency = 1, Image = t.Shadow, ImageColor3 = Color3.new(0, 0, 0), ImageTransparency = 1, ScaleType = Enum.ScaleType.Slice, SliceCenter = Rect.new(49, 49, 450, 450), ZIndex = 0, Parent = f})
+                                            local q = c(j, {Position = UDim2.fromOffset(24, 26), Size = UDim2.fromOffset(40, 40), BackgroundTransparency = 1, Parent = f})
+                                            local r = c("ImageLabel", {AnchorPoint = Vector2.new(.5, .5), Position = UDim2.fromScale(.5, .5), Size = UDim2.fromScale(.5, .5), Rotation = -14, BackgroundTransparency = 1, ImageColor3 = a.Accent, ImageTransparency = 1, ScaleType = Enum.ScaleType.Fit, Parent = q}) u(r, g.Icon or t.Logo) task.delay(.15, function() b(r, {Size = UDim2.fromScale(.85, .85), Rotation = 0, ImageTransparency = 0}, .6, Enum.EasingStyle.Back)
                                             end
-                                            local function ap(a)
-                                                if type(isfolder) == "function" and type(makefolder) == "function" and not isfolder(a) then
-                                                        makefolder(a)
+                                            ) d {Position = UDim2.fromOffset(78, 30), Size = UDim2.new(1, -100, 0, 22), Text = g.LoadingTitle or g.Title or "Airflow", TextSize = 20, Parent = f}
+                                            local A = d {Position = UDim2.fromOffset(78, 52), Size = UDim2.new(1, -100, 0, 16), Text = g.LoadingText or g.Subtitle or "Loading", TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, Parent = f}
+                                            local k = c(j, {Position = UDim2.new(0, 24, 1, -30), Size = UDim2.new(1, -48, 0, 4), BackgroundColor3 = a.Surface3, BorderSizePixel = 0, ClipsDescendants = true, Parent = f}) e(k, UDim.new(1, 0))
+                                            local l = c(j, {Size = UDim2.fromScale(0, 1), BackgroundColor3 = a.Accent, BorderSizePixel = 0, Parent = k}) e(l, UDim.new(1, 0))
+                                            local n = c(j, {Position = UDim2.fromScale(-.4, 0), Size = UDim2.fromScale(.4, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = .6, BorderSizePixel = 0, ZIndex = 2, Parent = k}) c("UIGradient", {Transparency = NumberSequence.new {NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(.5, 0), NumberSequenceKeypoint.new(1, 1)}, Parent = n}) b(f, {GroupTransparency = 0, Position = UDim2.fromScale(.5, .5)}, .4, Enum.EasingStyle.Quint) b(o, {Scale = 1}, .5, Enum.EasingStyle.Back) b(p, {ImageTransparency = .6}, .4)
+                                            local s = T:Create(n, TweenInfo.new(1.1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1), {Position = UDim2.fromScale(1, 0)}) s:Play() b(l, {Size = UDim2.fromScale(.85, 1)}, m * .8, Enum.EasingStyle.Quart) task.spawn(I)
+                                            local v = g.LoadingSteps or {"Preparing interface", "Loading icons", "Almost there"}
+                                            for a, b in ipairs(v) do
+                                                task.delay(m * (a - 1) / #v, function() if f.Parent then
+                                                        A.Text = b
                                                     end
                                                 end
-                                                local function aq(c)
-                                                    local b = c._type
-                                                    local a = c:Get()
-                                                    if b == "Keybind" then
-                                                        return {Type = b, Value = a and a.Name or nil}
-                                                    elseif b == "ColorPicker" then
-                                                            return {Type = b, Value = {a.R, a.G, a.B}}
-                                                        end
-                                                        return {Type = b, Value = a}
+                                                )
+                                            end
+                                            task.delay(m, function() b(l, {Size = UDim2.fromScale(1, 1)}, .25, Enum.EasingStyle.Quint) task.delay(.25, function() s:Cancel() for c, a in ipairs(f:GetChildren()) do
+                                                    if a:IsA "TextLabel" then
+                                                        b(a, {TextTransparency = 1}, .15)
                                                     end
-                                                    local function ar(b, e, c)
-                                                        local d = b._type
-                                                        local a = e.Value
-                                                        if d == "Keybind" then
-                                                            b:Set(a and Enum.KeyCode[a] or nil, c)
-                                                        elseif d == "ColorPicker" then
-                                                                if type(a) == "table" then
-                                                                    b:Set(Color3.new(a[1], a[2], a[3]), c)
-                                                                end
-                                                            elseif a ~= nil then
-                                                                    b:Set(a, c)
-                                                                end
+                                                end
+                                                for c, a in ipairs(q:GetChildren()) do
+                                                    b(a, {ImageTransparency = 1}, .15)
+                                                end
+                                                b(k, {BackgroundTransparency = 1}, .15) b(l, {BackgroundTransparency = 1}, .15) b(n, {BackgroundTransparency = 1}, .1) local a = self._fitScale or 1 local c = self.Root.Size b(f, {Size = UDim2.fromOffset(c.X.Offset * a, c.Y.Offset * a), Position = UDim2.fromScale(.5, .5)}, .5, Enum.EasingStyle.Quint) b(y, {CornerRadius = UDim.new(0, 10)}, .5, Enum.EasingStyle.Quint) b(o, {Scale = 1}, .5, Enum.EasingStyle.Quint) task.delay(.28, function() self:_playIntro(true) b(f, {GroupTransparency = 1}, .25) b(z, {Transparency = 1}, .2) b(p, {ImageTransparency = 1}, .2)
+                                                end
+                                                ) task.delay(.6, function() f:Destroy()
+                                                end
+                                                )
+                                            end
+                                            )
+                                        end
+                                        )
+                                    end
+                                    function g:_fitToScreen(d)
+                                        local a = self.Gui.AbsoluteSize
+                                        if a.X == 0 or a.Y == 0 then
+                                            return
+                                        end
+                                        local c = self.Root.Size
+                                        local e = math.min(1, (a.X - 24) / math.max(c.X.Offset, 1), (a.Y - 24) / math.max(c.Y.Offset, 1)) self._fitScale = math.max(e, .45)
+                                        if self._introDone and self.Open then
+                                            if d then
+                                                self.Scale.Scale = self._fitScale
+                                            else
+                                                b(self.Scale, {Scale = self._fitScale}, .2)
+                                            end
+                                        end
+                                    end
+                                    function g:_clampToScreen()
+                                        if not self.KeepOnScreen then
+                                            return
+                                        end
+                                        local a = self.Gui.AbsoluteSize
+                                        local d = self.Root
+                                        local c = d.AbsoluteSize / 2
+                                        local e = d.AbsolutePosition + c - self.Gui.AbsolutePosition
+                                        local f = Vector2.new(math.clamp(e.X, math.min(c.X, a.X / 2), math.max(a.X - c.X, a.X / 2)), math.clamp(e.Y, math.min(c.Y, a.Y / 2), math.max(a.Y - c.Y, a.Y / 2)))
+                                        if(f - e).Magnitude > .5 then
+                                            b(d, {Position = UDim2.fromOffset(f.X, f.Y)}, .25, Enum.EasingStyle.Quint)
+                                        end
+                                    end
+                                    function g:_createOpenButton(j)
+                                        local f = self.Gui
+                                        local b = c("TextButton", {AnchorPoint = Vector2.new(.5, 0), Position = UDim2.new(.5, 0, 0, 14), Size = UDim2.fromOffset(0, 40), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = a.Background, BorderSizePixel = 0, Text = "", AutoButtonColor = false, ZIndex = 30, Parent = f}) e(b, UDim.new(1, 0)) h(b, a.Stroke) o(b, 12, 16)
+                                        local l = c("ImageLabel", {AnchorPoint = Vector2.new(0, .5), Position = UDim2.new(0, 0, .5, 0), Size = UDim2.fromOffset(20, 20), BackgroundTransparency = 1, ImageColor3 = a.Accent, ScaleType = Enum.ScaleType.Fit, ZIndex = 31, Parent = b}) u(l, j.Icon or t.Logo) d {Position = UDim2.fromOffset(28, 0), Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = j.Title or "Airflow", TextSize = 13, TextTruncate = Enum.TextTruncate.None, ZIndex = 31, Parent = b}
+                                        self.OpenButton = b
+                                        local g, i = false, false
+                                        local k = Vector2.zero b.InputBegan:Connect(function(a) if p(a) then
+                                                g, i = true, false k = r() - b.AbsolutePosition
+                                            end
+                                        end
+                                        ) table.insert(self._connections, q.InputChanged:Connect(function(a) if not g then
+                                                return
+                                            end
+                                            if N(a) then
+                                                local a = r() - k - f.AbsolutePosition if(a - (b.AbsolutePosition - f.AbsolutePosition)).Magnitude > 3 then
+                                                    i = true
+                                                end
+                                                b.AnchorPoint = Vector2.new(0, 0) b.Position = UDim2.fromOffset(math.clamp(a.X, 0, math.max(f.AbsoluteSize.X - b.AbsoluteSize.X, 0)), math.clamp(a.Y, 0, math.max(f.AbsoluteSize.Y - b.AbsoluteSize.Y, 0)))
+                                            end
+                                        end
+                                        )) table.insert(self._connections, q.InputEnded:Connect(function(a) if g and p(a) then
+                                                g = false if not i then
+                                                    self:Toggle()
+                                                end
+                                            end
+                                        end
+                                        ))
+                                    end
+                                    function g:_enableResize(i)
+                                        local j = self.MaxSize or Vector2.new(math.huge, math.huge)
+                                        local f = c("Frame", {AnchorPoint = Vector2.new(.5, .5), Position = UDim2.new(1, 4, 1, 4), Size = UDim2.fromOffset(32, 32), BackgroundTransparency = 1, Active = true, ZIndex = 20, Parent = self.Root})
+                                        local g, d = c("ImageLabel", {AnchorPoint = Vector2.new(.5, .5), Position = UDim2.new(.5, -16, .5, -16), Size = UDim2.fromOffset(96, 96), BackgroundTransparency = 1, Image = "rbxassetid://120997033468887", ImageColor3 = a.Accent, ImageTransparency = .8, ZIndex = 20, Parent = f}), false
+                                        local h = self.Root.Size
+                                        local k = Vector2.zero
+                                        local e f.InputBegan:Connect(function(a) if p(a) then
+                                                d = true h = self.Root.Size k = r() b(g, {ImageTransparency = .35}, .1)
+                                            end
+                                        end
+                                        ) f.MouseEnter:Connect(function() if not d then
+                                                b(g, {ImageTransparency = .35}, .1)
+                                            end
+                                        end
+                                        ) f.MouseLeave:Connect(function() if not d then
+                                                b(g, {ImageTransparency = .8}, .17)
+                                            end
+                                        end
+                                        ) table.insert(self._connections, q.InputEnded:Connect(function(a) if d and p(a) then
+                                                d = false b(g, {ImageTransparency = .8}, .17) if e then
+                                                    self.Root.Size = UDim2.fromOffset(e.X, e.Y) e = nil
+                                                end
+                                                self:_fitToScreen() self:_clampToScreen()
+                                            end
+                                        end
+                                        )) table.insert(self._frameSteps, function(f) if not d then
+                                                return
+                                            end
+                                            local b = (r() - k) / self.Scale.Scale e = Vector2.new(math.clamp(h.X.Offset + b.X * 2, i.X, j.X), math.clamp(h.Y.Offset + b.Y * 2, i.Y, j.Y)) local c = Vector2.new(self.Root.Size.X.Offset, self.Root.Size.Y.Offset) local g = 1 - math.exp(-f * 35) local a = c:Lerp(e, g) a = Vector2.new(math.floor(a.X + .5), math.floor(a.Y + .5)) if a ~= c then
+                                                self.Root.Size = UDim2.fromOffset(a.X, a.Y)
+                                            end
+                                        end
+                                        )
+                                    end
+                                    local function R(a, b)
+                                        return a.ConfigFolder .. "/" .. b .. ".json"
+                                    end
+                                    local function S()
+                                        local a = "function"
+                                            return type(writefile) == a and type(readfile) == a and type(isfile) == a
+                                        end
+                                        local function ap(a)
+                                            if type(isfolder) == "function" and type(makefolder) == "function" and not isfolder(a) then
+                                                    makefolder(a)
+                                                end
+                                            end
+                                            local function aq(c)
+                                                local b = c._type
+                                                local a = c:Get()
+                                                if b == "Keybind" then
+                                                    return {Type = b, Value = a and a.Name or nil}
+                                                elseif b == "ColorPicker" then
+                                                        return {Type = b, Value = {a.R, a.G, a.B}}
+                                                    end
+                                                    return {Type = b, Value = a}
+                                                end
+                                                local function ar(b, e, c)
+                                                    local d = b._type
+                                                    local a = e.Value
+                                                    if d == "Keybind" then
+                                                        b:Set(a and Enum.KeyCode[a] or nil, c)
+                                                    elseif d == "ColorPicker" then
+                                                            if type(a) == "table" then
+                                                                b:Set(Color3.new(a[1], a[2], a[3]), c)
                                                             end
-                                                            function g:SaveConfig(a) a = a or self.ConfigName
+                                                        elseif a ~= nil then
+                                                                b:Set(a, c)
+                                                            end
+                                                        end
+                                                        function g:SaveConfig(a) a = a or self.ConfigName
+                                                            if not S() then
+                                                                return false, "file API unavailable"
+                                                            end
+                                                            ap(self.ConfigFolder)
+                                                            local b = {}
+                                                            for c, a in pairs(f.Flags) do
+                                                                if a._type and type(a.Get) == "function" then
+                                                                        b[c] = aq(a)
+                                                                    end
+                                                                end
+                                                                local c, d = pcall(function() writefile(R(self, a), C:JSONEncode(b))
+                                                                end
+                                                                )
+                                                                if c then
+                                                                    self.ConfigName = a
+                                                                end
+                                                                return c, d
+                                                            end
+                                                            function g:LoadConfig(a, d) a = a or self.ConfigName
                                                                 if not S() then
                                                                     return false, "file API unavailable"
                                                                 end
-                                                                ap(self.ConfigFolder)
-                                                                local b = {}
-                                                                for c, a in pairs(f.Flags) do
-                                                                    if a._type and type(a.Get) == "function" then
-                                                                            b[c] = aq(a)
-                                                                        end
-                                                                    end
-                                                                    local c, d = pcall(function() writefile(R(self, a), C:JSONEncode(b))
-                                                                    end
-                                                                    )
-                                                                    if c then
-                                                                        self.ConfigName = a
-                                                                    end
-                                                                    return c, d
+                                                                local b = R(self, a)
+                                                                if not isfile(b) then
+                                                                    return false, "no config named " .. a
                                                                 end
-                                                                function g:LoadConfig(a, d) a = a or self.ConfigName
-                                                                    if not S() then
-                                                                        return false, "file API unavailable"
-                                                                    end
-                                                                    local b = R(self, a)
-                                                                    if not isfile(b) then
-                                                                        return false, "no config named " .. a
-                                                                    end
-                                                                    local e, c = pcall(function() return C:JSONDecode(readfile(b))
-                                                                    end
-                                                                    )
-                                                                    if not e or type(c) ~= "table" then
-                                                                        return false, "config is not valid JSON"
-                                                                    end
-                                                                    local g = self._autoSaveEnabled self._autoSaveEnabled = false
-                                                                    for c, b in pairs(c) do
-                                                                        local a = f.Flags[c]
-                                                                        if a and type(a.Set) == "function" and type(b) == "table" and b.Type == a._type then
-                                                                                pcall(ar, a, b, d == true)
-                                                                            end
+                                                                local e, c = pcall(function() return C:JSONDecode(readfile(b))
+                                                                end
+                                                                )
+                                                                if not e or type(c) ~= "table" then
+                                                                    return false, "config is not valid JSON"
+                                                                end
+                                                                local g = self._autoSaveEnabled self._autoSaveEnabled = false
+                                                                for c, b in pairs(c) do
+                                                                    local a = f.Flags[c]
+                                                                    if a and type(a.Set) == "function" and type(b) == "table" and b.Type == a._type then
+                                                                            pcall(ar, a, b, d == true)
                                                                         end
-                                                                        self._autoSaveEnabled = g self._autoSaveReady = true self.ConfigName = a
+                                                                    end
+                                                                    self._autoSaveEnabled = g self._autoSaveReady = true self.ConfigName = a
+                                                                    return true
+                                                                end
+                                                                function g:DeleteConfig(a)
+                                                                    if not S() or type(delfile) ~= "function" then
+                                                                            return false, "file API unavailable"
+                                                                        end
+                                                                        local b = R(self, a)
+                                                                        if not isfile(b) then
+                                                                            return false, "no config named " .. a
+                                                                        end
+                                                                        delfile(b)
                                                                         return true
                                                                     end
-                                                                    function g:DeleteConfig(a)
-                                                                        if not S() or type(delfile) ~= "function" then
-                                                                                return false, "file API unavailable"
-                                                                            end
-                                                                            local b = R(self, a)
-                                                                            if not isfile(b) then
-                                                                                return false, "no config named " .. a
-                                                                            end
-                                                                            delfile(b)
-                                                                            return true
-                                                                        end
-                                                                        function g:ListConfigs()
-                                                                            local a = {}
-                                                                            if type(listfiles) ~= "function" or type(isfolder) ~= "function" or not isfolder(self.ConfigFolder) then
-                                                                                    return a
-                                                                                end
-                                                                                for d, c in ipairs(listfiles(self.ConfigFolder)) do
-                                                                                    local b = c:match "([^/\\]+)%.json$"
-                                                                                    if b then
-                                                                                        table.insert(a, b)
-                                                                                    end
-                                                                                end
-                                                                                table.sort(a)
+                                                                    function g:ListConfigs()
+                                                                        local a = {}
+                                                                        if type(listfiles) ~= "function" or type(isfolder) ~= "function" or not isfolder(self.ConfigFolder) then
                                                                                 return a
                                                                             end
-                                                                            function g:_autoSave()
-                                                                                if not self._autoSaveEnabled or self._destroyed or not self._autoSaveReady then
-                                                                                    return
+                                                                            for d, c in ipairs(listfiles(self.ConfigFolder)) do
+                                                                                local b = c:match "([^/\\]+)%.json$"
+                                                                                if b then
+                                                                                    table.insert(a, b)
                                                                                 end
-                                                                                if self._autoSavePending then
-                                                                                    return
+                                                                            end
+                                                                            table.sort(a)
+                                                                            return a
+                                                                        end
+                                                                        function g:_autoSave()
+                                                                            if not self._autoSaveEnabled or self._destroyed or not self._autoSaveReady then
+                                                                                return
+                                                                            end
+                                                                            if self._autoSavePending then
+                                                                                return
+                                                                            end
+                                                                            self._autoSavePending = true task.delay(.5, function() self._autoSavePending = false if not self._destroyed then
+                                                                                    self:SaveConfig(self.ConfigName)
                                                                                 end
-                                                                                self._autoSavePending = true task.delay(.5, function() self._autoSavePending = false if not self._destroyed then
-                                                                                        self:SaveConfig(self.ConfigName)
+                                                                            end
+                                                                            )
+                                                                        end
+                                                                        local function as(f, g, h)
+                                                                            local b = c("Frame", {AnchorPoint = Vector2.new(.5, .5), Position = UDim2.new(.5, 0, .5, -10), Size = UDim2.fromOffset(200, 70), BackgroundTransparency = 1, Parent = f})
+                                                                            local e = c("ImageLabel", {AnchorPoint = Vector2.new(.5, 0), Position = UDim2.new(.5, 0, 0, 0), Size = UDim2.fromOffset(26, 26), BackgroundTransparency = 1, ImageColor3 = a.Muted, ImageTransparency = .15, ScaleType = Enum.ScaleType.Fit, Parent = b}) u(e, g)
+                                                                            local j = d {Position = UDim2.fromOffset(0, 36), Size = UDim2.new(1, 0, 0, 16), Text = h, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, TextXAlignment = Enum.TextXAlignment.Center, Parent = b}
+                                                                            return b, j, e
+                                                                        end
+                                                                        local function at(g, i, f, j)
+                                                                            local b = c("Frame", {Size = UDim2.new(.5, -4, 0, 62), BackgroundColor3 = a.Surface2, BorderSizePixel = 0, LayoutOrder = i, Parent = g}) e(b) h(b) b:SetAttribute("NoDrag", true)
+                                                                            if f then
+                                                                                y(b, f, a.Muted, UDim2.new(0, 14, 0, 21))
+                                                                            end
+                                                                            d {Position = UDim2.fromOffset(f and 36 or 14, 12), Size = UDim2.new(1, -(f and 50 or 28), 0, 16), Text = j, TextSize = 12, TextColor3 = a.Muted, Parent = b}
+                                                                            return d {Position = UDim2.fromOffset(14, 34), Size = UDim2.new(1, -28, 0, 18), Text = "…", TextSize = 15, Parent = b}
+                                                                        end
+                                                                        local function ac(c)
+                                                                            local a = {}
+                                                                            local function d(b)
+                                                                                for c, b in ipairs(b:GetChildren()) do
+                                                                                    if b:IsA "TextLabel" or b:IsA "TextButton" or b:IsA "TextBox" then
+                                                                                        table.insert(a, {b, "TextTransparency", b.TextTransparency})
+                                                                                    elseif b:IsA "ImageLabel" or b:IsA "ImageButton" then
+                                                                                            table.insert(a, {b, "ImageTransparency", b.ImageTransparency})
+                                                                                        elseif b:IsA "UIStroke" then
+                                                                                                table.insert(a, {b, "Transparency", b.Transparency})
+                                                                                            elseif b:IsA "Frame" then
+                                                                                                    table.insert(a, {b, "BackgroundTransparency", b.BackgroundTransparency})
+                                                                                                end
+                                                                                                d(b)
+                                                                                            end
+                                                                                        end
+                                                                                        if c:IsA "Frame" then
+                                                                                            table.insert(a, {c, "BackgroundTransparency", c.BackgroundTransparency})
+                                                                                        end
+                                                                                        d(c)
+                                                                                        for c, a in ipairs(a) do
+                                                                                            a[1][a[2]] = 1 b(a[1], {[a[2]] = a[3]}, .28)
+                                                                                        end
                                                                                     end
-                                                                                end
-                                                                                )
-                                                                            end
-                                                                            local function as(f, g, h)
-                                                                                local b = c("Frame", {AnchorPoint = Vector2.new(.5, .5), Position = UDim2.new(.5, 0, .5, -10), Size = UDim2.fromOffset(200, 70), BackgroundTransparency = 1, Parent = f})
-                                                                                local e = c("ImageLabel", {AnchorPoint = Vector2.new(.5, 0), Position = UDim2.new(.5, 0, 0, 0), Size = UDim2.fromOffset(26, 26), BackgroundTransparency = 1, ImageColor3 = a.Muted, ImageTransparency = .15, ScaleType = Enum.ScaleType.Fit, Parent = b}) u(e, g)
-                                                                                local j = d {Position = UDim2.fromOffset(0, 36), Size = UDim2.new(1, 0, 0, 16), Text = h, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, TextXAlignment = Enum.TextXAlignment.Center, Parent = b}
-                                                                                return b, j, e
-                                                                            end
-                                                                            local function at(g, i, f, j)
-                                                                                local b = c("Frame", {Size = UDim2.new(.5, -4, 0, 62), BackgroundColor3 = a.Surface2, BorderSizePixel = 0, LayoutOrder = i, Parent = g}) e(b) h(b) b:SetAttribute("NoDrag", true)
-                                                                                if f then
-                                                                                    y(b, f, a.Muted, UDim2.new(0, 14, 0, 21))
-                                                                                end
-                                                                                d {Position = UDim2.fromOffset(f and 36 or 14, 12), Size = UDim2.new(1, -(f and 50 or 28), 0, 16), Text = j, TextSize = 12, TextColor3 = a.Muted, Parent = b}
-                                                                                return d {Position = UDim2.fromOffset(14, 34), Size = UDim2.new(1, -28, 0, 18), Text = "…", TextSize = 15, Parent = b}
-                                                                            end
-                                                                            local function ac(c)
-                                                                                local a = {}
-                                                                                local function d(b)
-                                                                                    for c, b in ipairs(b:GetChildren()) do
-                                                                                        if b:IsA "TextLabel" or b:IsA "TextButton" or b:IsA "TextBox" then
-                                                                                            table.insert(a, {b, "TextTransparency", b.TextTransparency})
-                                                                                        elseif b:IsA "ImageLabel" or b:IsA "ImageButton" then
-                                                                                                table.insert(a, {b, "ImageTransparency", b.ImageTransparency})
-                                                                                            elseif b:IsA "UIStroke" then
-                                                                                                    table.insert(a, {b, "Transparency", b.Transparency})
-                                                                                                elseif b:IsA "Frame" then
-                                                                                                        table.insert(a, {b, "BackgroundTransparency", b.BackgroundTransparency})
-                                                                                                    end
-                                                                                                    d(b)
-                                                                                                end
-                                                                                            end
-                                                                                            if c:IsA "Frame" then
-                                                                                                table.insert(a, {c, "BackgroundTransparency", c.BackgroundTransparency})
-                                                                                            end
-                                                                                            d(c)
-                                                                                            for c, a in ipairs(a) do
-                                                                                                a[1][a[2]] = 1 b(a[1], {[a[2]] = a[3]}, .28)
-                                                                                            end
-                                                                                        end
-                                                                                        local function au(a, c) c = c or 0 a.GroupTransparency = 1 a.Position = UDim2.fromOffset(0, c + 14) a.Visible = true b(a, {GroupTransparency = 0, Position = UDim2.fromOffset(0, c)}, .32, Enum.EasingStyle.Quint)
-                                                                                        end
-                                                                                        function g:_buildHome(f)
-                                                                                            local g, n, p, w = "Frame", "UIListLayout", "NoDrag", "Executor"
-                                                                                            local m = self:Tab {Name = f.Name or "Home", Desc = f.Desc, Icon = f.Icon or "house"}
-                                                                                            local q = m.List
-                                                                                            local x = f.Pages or f.Tabs
-                                                                                            local r = {}
-                                                                                            local s
-                                                                                            if type(x) == "table" and #x > 0 then
-                                                                                                s = c(g, {Size = UDim2.new(1, 0, 0, 32), BackgroundTransparency = 1, LayoutOrder = 1, Parent = q}) c(n, {FillDirection = Enum.FillDirection.Horizontal, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 6), Parent = s})
-                                                                                            end
-                                                                                            local y = f.Greeting
-                                                                                            if y == nil then
-                                                                                                local a = tonumber(os.date "%H") or 12
-                                                                                                local b = a < 12 and "morning" or(a < 18 and "afternoon" or "evening") y = "Good " .. b .. "."
-                                                                                            end
-                                                                                            local j = c(g, {Size = UDim2.new(1, 0, 0, 58), BackgroundColor3 = a.Surface2, BorderSizePixel = 0, LayoutOrder = 2, Parent = q}) j:SetAttribute(p, true) e(j) h(j)
-                                                                                            local z = c("ImageLabel", {Position = UDim2.fromOffset(12, 11), Size = UDim2.fromOffset(36, 36), BackgroundColor3 = a.Surface, BorderSizePixel = 0, Parent = j}) e(z, UDim.new(0, 8)) h(z) task.spawn(function() local b, a = pcall(function() return D:GetUserThumbnailAsync(E.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100)
-                                                                                            end
-                                                                                            ) if b and a then
-                                                                                                z.Image = a
-                                                                                            end
-                                                                                        end
-                                                                                        ) d {Position = UDim2.fromOffset(58, 11), Size = UDim2.new(1, -72, 0, 18), Text = (f.Welcome or "Hello, ") .. E.DisplayName, TextSize = 15, Parent = j}
-                                                                                        d {Position = UDim2.fromOffset(58, 30), Size = UDim2.new(1, -72, 0, 16), Text = y, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, Parent = j}
-                                                                                        local t = c(g, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, LayoutOrder = 3, Parent = q}) c(n, {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 8), Parent = t})
-                                                                                        if f.Sections ~= false then
-                                                                                            local b = c(g, {Size = UDim2.new(1, 0, 0, 24), BackgroundTransparency = 1, LayoutOrder = 1, Parent = t})
-                                                                                            local e = d {Position = UDim2.fromOffset(2, 6), Size = UDim2.new(0, 0, 0, 16), AutomaticSize = Enum.AutomaticSize.X, Text = string.upper(f.SectionName or "System info"), TextSize = 12, TextColor3 = a.Muted, TextTruncate = Enum.TextTruncate.None, Parent = b}
-                                                                                            local i = c(g, {AnchorPoint = Vector2.new(1, .5), Position = UDim2.new(1, 0, 0, 14), Size = UDim2.new(1, -12, 0, 1), BackgroundColor3 = a.Stroke, BorderSizePixel = 0, Parent = b})
-                                                                                            local function h() i.Size = UDim2.new(1, -(e.AbsoluteSize.X + 14), 0, 1)
-                                                                                            end
-                                                                                            e:GetPropertyChangedSignal "AbsoluteSize":Connect(h) task.defer(h)
-                                                                                        end
-                                                                                        local C = c(g, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, LayoutOrder = 2, Parent = t}) c("UIGridLayout", {CellSize = UDim2.new(.5, -4, 0, 62), CellPadding = UDim2.fromOffset(8, 8), SortOrder = Enum.SortOrder.LayoutOrder, Parent = C})
-                                                                                        local N = f.Stats or {"FPS", "Ping", w, "Game", "Region", "Time"}
-                                                                                        local F = {}
-                                                                                        for b, a in ipairs(N) do
-                                                                                            F[a] = true
-                                                                                        end
-                                                                                        local G = 0
-                                                                                        local function l(a, b, c)
-                                                                                            if not F[a] then
-                                                                                                return nil
-                                                                                            end
-                                                                                            G += 1
-                                                                                            return at(C, G, b, c)
-                                                                                        end
-                                                                                        local H = l("FPS", "activity", "FPS")
-                                                                                        local I = l("Ping", "wifi", "Ping")
-                                                                                        local J = l(w, "terminal", w)
-                                                                                        local A = l("Game", "gamepad-2", "Game")
-                                                                                        local B = l("Region", "globe", "Server region")
-                                                                                        local K = l("Time", "clock", "Time of day")
-                                                                                        local L = l("Players", "users", "Players")
-                                                                                        local M = l("Uptime", "timer", "Session")
-                                                                                        if J then
-                                                                                            J.Text = aj()
-                                                                                        end
-                                                                                        if A then
-                                                                                            A.Text = "Loading" task.spawn(function() A.Text = ak()
-                                                                                            end
-                                                                                            )
-                                                                                        end
-                                                                                        if B then
-                                                                                            B.Text = "Loading" am(function(a) B.Text = a
-                                                                                            end
-                                                                                            )
-                                                                                        end
-                                                                                        local v = 0
-                                                                                        local O = os.clock() self:_listen("Render", function() v += 1
-                                                                                        end
-                                                                                        ) task.spawn(function() while not self._destroyed and m.List.Parent and m._page.Parent do
-                                                                                                if not self.Open or self.CurrentTab ~= m then
-                                                                                                    v = 0 task.wait(1) continue
-                                                                                                end
-                                                                                                if H then
-                                                                                                    H.Text = tostring(v)
-                                                                                                end
-                                                                                                v = 0 if I then
-                                                                                                    local a, b = pcall(function() return math.floor(E:GetNetworkPing() * 1e3)
-                                                                                                    end
-                                                                                                    ) I.Text = (a and b or 0) .. " ms"
-                                                                                                end
-                                                                                                if K then
-                                                                                                    K.Text = os.date(f.TimeFormat or "%H:%M")
-                                                                                                end
-                                                                                                if L then
-                                                                                                    L.Text = #D:GetPlayers() .. " / " .. D.MaxPlayers
-                                                                                                end
-                                                                                                if M then
-                                                                                                    local a = math.floor(os.clock() - O) M.Text = string.format("%d:%02d", math.floor(a / 60), a % 60)
-                                                                                                end
-                                                                                                task.wait(1)
-                                                                                            end
-                                                                                        end
-                                                                                        ) table.insert(r, {Title = f.SectionName or "Details", Icon = f.TabIcon or "layout-grid", Frame = t})
-                                                                                        if s then
-                                                                                            for j, b in ipairs(x) do
-                                                                                                local f = c(g, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, Visible = false, LayoutOrder = 3, Parent = q}) c(n, {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 8), Parent = f})
-                                                                                                if type(b.Content) == "string" then
-                                                                                                    local j = c(g, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = a.Surface2, BorderSizePixel = 0, LayoutOrder = 1, Parent = f}) j:SetAttribute(p, true) e(j) h(j) o(j, 14, 14, 12, 14) d {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = b.Content, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, TextWrapped = true, TextTruncate = Enum.TextTruncate.None, TextYAlignment = Enum.TextYAlignment.Top, Parent = j}
-                                                                                                end
-                                                                                                if type(b.Entries) == "table" then
-                                                                                                    for m, b in ipairs(b.Entries) do
-                                                                                                        local j = c(g, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = a.Surface2, BorderSizePixel = 0, LayoutOrder = m, Parent = f}) j:SetAttribute(p, true) e(j) h(j) o(j, 14, 14, 12, 14) c(n, {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 4), Parent = j})
-                                                                                                        local l = c(g, {Size = UDim2.new(1, 0, 0, 18), BackgroundTransparency = 1, LayoutOrder = 1, Parent = j}) d {Size = UDim2.new(1, -70, 1, 0), Text = b.Title or b.Version or "Update", TextSize = 14, Parent = l}
-                                                                                                        if b.Date or b.Tag then
-                                                                                                            local f = c(g, {AnchorPoint = Vector2.new(1, .5), Position = UDim2.new(1, 0, .5, 0), Size = UDim2.fromOffset(0, 20), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = a.Surface, BorderSizePixel = 0, Parent = l}) e(f, UDim.new(0, 5)) h(f) o(f, 8, 8) d {Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = b.Tag or b.Date, TextSize = 11, TextColor3 = a.Muted, TextTruncate = Enum.TextTruncate.None, Parent = f}
-                                                                                                        end
-                                                                                                        local k = b.Content or b.Body
-                                                                                                        if type(b.Changes) == "table" then
-                                                                                                            k = "• " .. table.concat(b.Changes, "\n• ")
-                                                                                                        end
-                                                                                                        if k then
-                                                                                                            d {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = k, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, TextWrapped = true, TextTruncate = Enum.TextTruncate.None, TextYAlignment = Enum.TextYAlignment.Top, LayoutOrder = 2, Parent = j}
-                                                                                                        end
-                                                                                                    end
-                                                                                                end
-                                                                                                if type(b.Build) == "function" then
-                                                                                                        k(b.Build, f)
-                                                                                                        for b, a in ipairs(f:GetChildren()) do
-                                                                                                            if a:IsA "GuiObject" then
-                                                                                                                a:SetAttribute(p, true)
-                                                                                                            end
-                                                                                                        end
-                                                                                                    end
-                                                                                                    table.insert(r, {Title = b.Name or b.Title or "Page", Icon = b.Icon, Frame = f})
-                                                                                                end
-                                                                                                local f = {}
-                                                                                                local function l(c, d)
-                                                                                                    local e = self._homeIndex ~= c self._homeIndex = c j.Visible = c == 1
-                                                                                                    if c == 1 and e and not d then
-                                                                                                        ac(j)
-                                                                                                    end
-                                                                                                    for i, k in ipairs(r) do
-                                                                                                        local g = i == c
-                                                                                                        local j = k.Frame j.Visible = g
-                                                                                                        if g and e and not d then
-                                                                                                            for b, a in ipairs(j:GetChildren()) do
-                                                                                                                if a:IsA "GuiObject" then
-                                                                                                                    ac(a)
-                                                                                                                end
-                                                                                                            end
-                                                                                                        end
-                                                                                                        local h = f[i]
-                                                                                                        if h then
-                                                                                                            b(h.Frame, {BackgroundTransparency = g and 0 or 1}, .15) b(h.Stroke, {Transparency = g and 0 or 1}, .15) b(h.Label, {TextColor3 = g and a.Text or a.Muted}, .15)
-                                                                                                            if h.Icon then
-                                                                                                                b(h.Icon, {ImageColor3 = g and a.Accent or a.Muted}, .15)
-                                                                                                            end
-                                                                                                        end
-                                                                                                    end
-                                                                                                end
-                                                                                                for i, k in ipairs(r) do
-                                                                                                    local g = c("TextButton", {Size = UDim2.fromOffset(0, 32), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = a.Surface2, BackgroundTransparency = 1, Text = "", AutoButtonColor = false, LayoutOrder = i, Parent = s}) e(g, UDim.new(0, 7))
-                                                                                                    local m = h(g, a.Stroke, 1) o(g, 12, 12)
-                                                                                                    local j
-                                                                                                    if k.Icon then
-                                                                                                        j = c("ImageLabel", {AnchorPoint = Vector2.new(0, .5), Position = UDim2.new(0, 0, .5, 0), Size = UDim2.fromOffset(14, 14), BackgroundTransparency = 1, ImageColor3 = a.Muted, ScaleType = Enum.ScaleType.Fit, Parent = g}) u(j, k.Icon)
-                                                                                                    end
-                                                                                                    local n = d {Position = UDim2.fromOffset(j and 20 or 0, 0), Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = k.Title, TextSize = 13, TextColor3 = a.Muted, TextTruncate = Enum.TextTruncate.None, Parent = g}
-                                                                                                    f[i] = {Frame = g, Stroke = m, Label = n, Icon = j}
-                                                                                                    g.MouseEnter:Connect(function() if self._homeIndex ~= i then
-                                                                                                            b(g, {BackgroundTransparency = .4}, .12) b(m, {Transparency = .5}, .12)
-                                                                                                        end
-                                                                                                    end
-                                                                                                    ) g.MouseLeave:Connect(function() if self._homeIndex ~= i then
-                                                                                                            b(g, {BackgroundTransparency = 1}, .2) b(m, {Transparency = 1}, .2)
-                                                                                                        end
-                                                                                                    end
-                                                                                                    ) g.MouseButton1Click:Connect(function() l(i)
-                                                                                                    end
-                                                                                                    )
-                                                                                                end
-                                                                                                l(1)
-                                                                                            end
-                                                                                            m._order = 10 self.Home = m
-                                                                                            return m
-                                                                                        end
-                                                                                        function g:Tab(g, t) g = l(g, {Title = "Name", Description = "Desc"})
-                                                                                            if t ~= nil and g.Icon == nil then
-                                                                                                g.Icon = t
-                                                                                            end
-                                                                                            local f = setmetatable({Name = g.Name or "Tab", Window = self, _order = 0}, j)
-                                                                                            local k = c("TextButton", {Size = UDim2.new(1, 0, 0, 38), BackgroundColor3 = a.Surface2, BackgroundTransparency = 1, Text = "", AutoButtonColor = false, LayoutOrder = #self.Tabs + 1, Parent = self.TabList}) e(k)
-                                                                                            local q = h(k, a.Stroke, 1) f._button = k
-                                                                                            local r = g.Icon ~= nil
-                                                                                            if r then
-                                                                                                local b = c("ImageLabel", {AnchorPoint = Vector2.new(0, .5), Position = UDim2.new(0, 12, .5, 0), Size = UDim2.fromOffset(16, 16), BackgroundTransparency = 1, ImageColor3 = a.Muted, ScaleType = Enum.ScaleType.Fit, Parent = k}) u(b, g.Icon) f._icon = b
-                                                                                            end
-                                                                                            f._label = d {Position = UDim2.fromOffset(r and 36 or 14, 0), Size = UDim2.new(1, -(r and 44 or 22), 1, 0), Text = f.Name, TextColor3 = a.Muted, Parent = k}
-                                                                                            local m = c("Frame", {Name = f.Name, Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Visible = false, Parent = self.Content}) f._page = m d {Position = UDim2.fromOffset(24, 20), Size = UDim2.new(1, -72, 0, 24), Text = f.Name, TextSize = 22, Parent = m}
-                                                                                            if g.Desc then
-                                                                                                d {Position = UDim2.fromOffset(24, 44), Size = UDim2.new(1, -72, 0, 16), Text = g.Desc, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, Parent = m}
-                                                                                            end
-                                                                                            local v = g.Desc and 70 or 58
-                                                                                            local n = c("ScrollingFrame", {Position = UDim2.fromOffset(0, v), Size = UDim2.new(1, 0, 1, -v), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 2, ScrollBarImageColor3 = a.Accent, ScrollBarImageTransparency = .5, AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(), Parent = m}) o(n, 24, 24, 2, 24) c("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 8), Parent = n}) f.List = n
-                                                                                            local s, p = as(m, g.Icon or "layout-grid", g.EmptyText or "Nothing here yet"), 0 n.ChildAdded:Connect(function(a) if a:IsA "GuiObject" then
-                                                                                                    p += 1 s.Visible = false
-                                                                                                end
-                                                                                            end
-                                                                                            ) n.ChildRemoved:Connect(function(a) if a:IsA "GuiObject" then
-                                                                                                    p = math.max(p - 1, 0) s.Visible = p <= 0
-                                                                                                end
-                                                                                            end
-                                                                                            ) s.Visible = true k.MouseEnter:Connect(function() if self.CurrentTab ~= f then
-                                                                                                    b(k, {BackgroundTransparency = .4}, .12) b(q, {Transparency = .5}, .12)
-                                                                                                end
-                                                                                            end
-                                                                                            ) k.MouseLeave:Connect(function() if self.CurrentTab ~= f then
-                                                                                                    b(k, {BackgroundTransparency = 1}, .2) b(q, {Transparency = 1}, .2)
-                                                                                                end
-                                                                                            end
-                                                                                            ) k.MouseButton1Click:Connect(function() self:SelectTab(f)
-                                                                                            end
-                                                                                            ) f._stroke = q
-                                                                                            if not self._introDone then
-                                                                                                k.Visible = false
-                                                                                            end
-                                                                                            table.insert(self.Tabs, f)
-                                                                                            if #self.Tabs == 1 then
-                                                                                                task.defer(function() self:SelectTab(f)
-                                                                                                end
-                                                                                                )
-                                                                                            end
-                                                                                            return f
-                                                                                        end
-                                                                                        g.CreateTab = g.Tab
-                                                                                        function g:Dialog(j)
-                                                                                            local s = "TextTransparency" j = l(j, {Text = "Content", Message = "Content"})
-                                                                                            if self._dialog then
-                                                                                                self._dialog.Close()
-                                                                                            end
-                                                                                            local f = 18
-                                                                                            local q = c("TextButton", {Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, ZIndex = 40, Parent = self.Body})
-                                                                                            local g = c("Frame", {AnchorPoint = Vector2.new(.5, .5), Position = UDim2.new(.5, 0, .5, 10), Size = UDim2.fromOffset(300, 120), BackgroundColor3 = a.Background, BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 41, Parent = q}) e(g, UDim.new(0, 10))
-                                                                                            local u = h(g, a.Stroke, 1)
-                                                                                            local v = c("UIScale", {Scale = .94, Parent = g})
-                                                                                            local m, t = {}, 0
-                                                                                            if j.Icon then
-                                                                                                local c, b = y(g, j.Icon, a.Accent, UDim2.new(0, f, 0, f + 9)) b.ImageTransparency = 1 c.ZIndex = 42 b.ZIndex = 42 table.insert(m, {b, "ImageTransparency", 0}) t = 24
-                                                                                            end
-                                                                                            local x = d {Position = UDim2.fromOffset(f + t, f), Size = UDim2.new(1, -(f * 2 + t), 0, 18), Text = j.Title or "Are you sure?", TextSize = 15, TextTransparency = 1, ZIndex = 42, Parent = g}
-                                                                                            table.insert(m, {x, s, 0})
-                                                                                            local n = 0
-                                                                                            if j.Content then
-                                                                                                local b = d {Position = UDim2.fromOffset(f, f + 24), Size = UDim2.new(1, -f * 2, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = j.Content, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, TextWrapped = true, TextTransparency = 1, TextTruncate = Enum.TextTruncate.None, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 42, Parent = g}
-                                                                                                table.insert(m, {b, s, 0}) n = math.max(b.TextBounds.Y, 16) + 6 b:GetPropertyChangedSignal "TextBounds":Connect(function() local a = math.max(b.TextBounds.Y, 16) + 6 if a ~= n then
-                                                                                                        n = a g.Size = UDim2.fromOffset(300, f + 24 + n + 12 + 34 + f) local b = g:FindFirstChild "ButtonRow" if b then
-                                                                                                            b.Position = UDim2.fromOffset(f, f + 24 + n + 12)
-                                                                                                        end
-                                                                                                    end
-                                                                                                end
-                                                                                                )
-                                                                                            end
-                                                                                            local w = c("Frame", {Name = "ButtonRow", Position = UDim2.fromOffset(f, f + 24 + n + 12), Size = UDim2.new(1, -f * 2, 0, 34), BackgroundTransparency = 1, ZIndex = 42, Parent = g}) c("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 8), Parent = w}) g.Size = UDim2.fromOffset(300, f + 24 + n + 12 + 34 + f)
-                                                                                            local p, r = {}, false
-                                                                                            function p.Close()
-                                                                                                if r then
-                                                                                                    return
-                                                                                                end
-                                                                                                r = true
-                                                                                                if self._dialog == p then
-                                                                                                    self._dialog = nil
-                                                                                                end
-                                                                                                b(q, {BackgroundTransparency = 1}, .18) b(g, {BackgroundTransparency = 1, Position = UDim2.new(.5, 0, .5, 8)}, .18, Enum.EasingStyle.Quint) b(v, {Scale = .96}, .18, Enum.EasingStyle.Quint) b(u, {Transparency = 1}, .12)
-                                                                                                for c, a in ipairs(m) do
-                                                                                                    b(a[1], {[a[2]] = 1}, .12)
-                                                                                                end
-                                                                                                task.delay(.2, function() q:Destroy()
-                                                                                                end
-                                                                                                )
-                                                                                            end
-                                                                                            for q, j in ipairs(j.Buttons or {}) do
-                                                                                                local g = j.Variant == "Primary"
-                                                                                                local f = c("TextButton", {Size = UDim2.fromOffset(0, 34), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = g and a.Accent or a.Surface2, BackgroundTransparency = 1, BorderSizePixel = 0, Text = "", AutoButtonColor = false, ClipsDescendants = true, LayoutOrder = q, ZIndex = 43, Parent = w}) e(f, UDim.new(0, 7))
-                                                                                                local i = h(f, g and a.Accent or a.Stroke, 1) o(f, 14, 14)
-                                                                                                local t = d {Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = j.Title or j.Name or "OK", TextSize = 13, TextColor3 = g and a.AccentDark or a.Text, TextXAlignment = Enum.TextXAlignment.Center, TextTransparency = 1, ZIndex = 44, Parent = f}
-                                                                                                local l = g and .12 or 0
-                                                                                                local n = g and .4 or 0 table.insert(m, {f, "BackgroundTransparency", l}) table.insert(m, {i, "Transparency", n}) table.insert(m, {t, s, 0}) f.MouseEnter:Connect(function() if r then
-                                                                                                        return
-                                                                                                    end
-                                                                                                    if g then
-                                                                                                        b(f, {BackgroundTransparency = 0}, .12) b(i, {Transparency = 0}, .12)
-                                                                                                    else
-                                                                                                        b(i, {Color = a.StrokeHover}, .12)
-                                                                                                    end
-                                                                                                end
-                                                                                                ) f.MouseLeave:Connect(function() if r then
-                                                                                                        return
-                                                                                                    end
-                                                                                                    if g then
-                                                                                                        b(f, {BackgroundTransparency = l}, .2) b(i, {Transparency = n}, .2)
-                                                                                                    else
-                                                                                                        b(i, {Color = a.Stroke}, .2)
-                                                                                                    end
-                                                                                                end
-                                                                                                ) f.MouseButton1Click:Connect(function() p.Close() k(j.Callback)
-                                                                                                end
-                                                                                                )
-                                                                                            end
-                                                                                            if j.CloseOnBackdrop ~= false then
-                                                                                                q.MouseButton1Click:Connect(function() p.Close() k(j.OnCancel)
-                                                                                                end
-                                                                                                )
-                                                                                            end
-                                                                                            self._dialog = p b(q, {BackgroundTransparency = .45}, .25) b(g, {BackgroundTransparency = 0, Position = UDim2.fromScale(.5, .5)}, .3, Enum.EasingStyle.Quint) b(u, {Transparency = 0}, .25) b(v, {Scale = 1}, .4, Enum.EasingStyle.Back)
-                                                                                            for c, a in ipairs(m) do
-                                                                                                b(a[1], {[a[2]] = a[3]}, .25)
-                                                                                            end
-                                                                                            return p
-                                                                                        end
-                                                                                        function g:Confirm(a) a = l(a, {Text = "Content", Message = "Content"})
-                                                                                            return self:Dialog {Title = a.Title or "Are you sure?", Content = a.Content, Icon = a.Icon, OnCancel = a.OnCancel, Buttons = {{Title = a.CancelText or "Cancel", Callback = a.OnCancel}, {Title = a.ConfirmText or "Confirm", Variant = "Primary", Callback = a.Callback}}}
-                                                                                        end
-                                                                                        function g:_listen(e, c, a)
-                                                                                            local b = self._inputListeners[e] table.insert(b, c)
-                                                                                            local function d()
-                                                                                                for a, d in ipairs(b) do
-                                                                                                    if d == c then
-                                                                                                        table.remove(b, a)
-                                                                                                        break
-                                                                                                    end
-                                                                                                end
-                                                                                            end
-                                                                                            if a then
-                                                                                                a._listeners = a._listeners or {}
-                                                                                                table.insert(a._listeners, d)
-                                                                                            end
-                                                                                            return d
-                                                                                        end
-                                                                                        function g:_indicatorY(a)
-                                                                                            local b = self.TabList
-                                                                                            local c = self.Scale.Scale
-                                                                                            return(a._button.AbsolutePosition.Y - b.AbsolutePosition.Y + a._button.AbsoluteSize.Y / 2) / c + b.Position.Y.Offset
-                                                                                        end
-                                                                                        function g:_placeIndicator(d)
-                                                                                            local a = self.Indicator
-                                                                                            local c = self:_indicatorY(d)
-                                                                                            if not a.Visible then
-                                                                                                a.Visible = true a.Position = UDim2.fromOffset(6, c) a.Size = UDim2.fromOffset(3, 0)
-                                                                                            end
-                                                                                            b(a, {Position = UDim2.fromOffset(6, c), Size = UDim2.fromOffset(3, 18)}, .35, Enum.EasingStyle.Back)
-                                                                                        end
-                                                                                        function g:SelectTab(c)
-                                                                                            if self.CurrentTab == c then
-                                                                                                return
-                                                                                            end
-                                                                                            local d = self.CurrentTab self.CurrentTab = c self:_settleTransition()
-                                                                                            local f = (self._transitionGeneration or 0) + 1 self._transitionGeneration = f
-                                                                                            if d then
-                                                                                                b(d._button, {BackgroundTransparency = 1}, .2) b(d._stroke, {Transparency = 1}, .2) b(d._label, {TextColor3 = a.Muted}, .2)
-                                                                                                if d._icon then
-                                                                                                    b(d._icon, {ImageColor3 = a.Muted}, .2)
-                                                                                                end
-                                                                                                local c = self._outLayer d._page.Parent = c self._outPage = d._page c.GroupTransparency = 0 c.Position = UDim2.fromOffset(0, 0) c.Visible = true b(c, {GroupTransparency = 1, Position = UDim2.fromOffset(0, -10)}, .18) task.delay(.18, function() if self._transitionGeneration == f then
-                                                                                                        self:_settleOut()
-                                                                                                    end
-                                                                                                end
-                                                                                                )
-                                                                                            end
-                                                                                            b(c._button, {BackgroundTransparency = 0}, .2) b(c._stroke, {Transparency = 0}, .2) b(c._label, {TextColor3 = a.Text}, .2)
-                                                                                            if c._icon then
-                                                                                                b(c._icon, {ImageColor3 = a.Accent}, .2)
-                                                                                            end
-                                                                                            self:_placeIndicator(c)
-                                                                                            local e = c._page e.Position = UDim2.fromOffset(0, 0) e.Visible = true e.Parent = self._inLayer self._inPage = e au(self._inLayer) task.delay(.32, function() if self._transitionGeneration == f then
-                                                                                                    self:_settleIn()
-                                                                                                end
-                                                                                            end
-                                                                                            )
-                                                                                        end
-                                                                                        function g:_settleOut()
-                                                                                            local a = self._outPage
-                                                                                            if a then
-                                                                                                a.Parent = self.Content a.Visible = false self._outPage = nil
-                                                                                            end
-                                                                                            self._outLayer.Visible = false
-                                                                                        end
-                                                                                        function g:_settleIn()
-                                                                                            local a = self._inPage
-                                                                                            if a then
-                                                                                                a.Parent = self.Content a.Position = UDim2.fromOffset(0, 0) self._inPage = nil
-                                                                                            end
-                                                                                            self._inLayer.Visible = false
-                                                                                        end
-                                                                                        function g:_settleTransition() self:_settleOut() self:_settleIn()
-                                                                                        end
-                                                                                        function g:Toggle(a)
-                                                                                            if not self._introDone then
-                                                                                                return
-                                                                                            end
-                                                                                            if a == nil then
-                                                                                                a = not self.Open
-                                                                                            end
-                                                                                            if a == self.Open then
-                                                                                                return
-                                                                                            end
-                                                                                            self.Open = a
-                                                                                            if a then
-                                                                                                self.Root.Visible = true b(self.Scale, {Scale = self._fitScale or 1}, .4, Enum.EasingStyle.Back) b(self.Body, {GroupTransparency = 0}, .25) b(self.BodyStroke, {Transparency = 0}, .25) b(self.Shadow, {ImageTransparency = .6}, .3)
-                                                                                            else
-                                                                                                b(self.Scale, {Scale = (self._fitScale or 1) * .94}, .2, Enum.EasingStyle.Quint) b(self.Body, {GroupTransparency = 1}, .16) b(self.BodyStroke, {Transparency = 1}, .12) b(self.Shadow, {ImageTransparency = 1}, .16) task.delay(.2, function() if not self.Open then
-                                                                                                        self.Root.Visible = false
-                                                                                                    end
-                                                                                                end
-                                                                                                )
-                                                                                            end
-                                                                                        end
-                                                                                        function g:SetKeepOnScreen(a) self.KeepOnScreen = a ~= false
-                                                                                            if self.KeepOnScreen then
-                                                                                                self:_clampToScreen()
-                                                                                            end
-                                                                                        end
-                                                                                        function g:SetKeybind(a)
-                                                                                            if type(a) == "string" then
-                                                                                                a = Enum.KeyCode[a]
-                                                                                            end
-                                                                                            if typeof(a) ~= "EnumItem" then
-                                                                                                return
-                                                                                            end
-                                                                                            self.Keybind = a
-                                                                                            if self._keyChipLabel then
-                                                                                                self._keyChipLabel.Text = P(a)
-                                                                                            end
-                                                                                            if self._wmSub then
-                                                                                                self._wmSub.Text = P(a) .. " · toggle"
-                                                                                            end
-                                                                                        end
-                                                                                        function g:Notify(f)
-                                                                                            local k = "Frame" f = l(f, {Text = "Content", Message = "Content", Image = "Icon"})
-                                                                                            local u = f.Duration or 4
-                                                                                            local s = an[f.Type] or a.Text self._notifyOrder += 1
-                                                                                            local j = c(k, {Size = UDim2.new(1, 0, 0, 0), BackgroundTransparency = 1, LayoutOrder = self._notifyOrder, Parent = self.NotifyHolder})
-                                                                                            local r = c(k, {Position = UDim2.fromOffset(320, 0), Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, Parent = j})
-                                                                                            local v = c("ImageLabel", {Position = UDim2.fromOffset(-20, -20), Size = UDim2.new(1, 40, 1, 40), BackgroundTransparency = 1, Image = t.Shadow, ImageColor3 = Color3.new(0, 0, 0), ImageTransparency = 1, ScaleType = Enum.ScaleType.Slice, SliceCenter = Rect.new(49, 49, 450, 450), ZIndex = 0, Parent = r})
-                                                                                            local g = c("CanvasGroup", {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = a.Background, BorderSizePixel = 0, GroupTransparency = 1, Parent = r}) e(g, UDim.new(0, 10))
-                                                                                            local B = h(g, a.Stroke) M(g) x(g, UDim2.fromOffset(280, 140), UDim2.new(1, -8, 0, -12), .8, 90) x(g, UDim2.fromOffset(140, 80), UDim2.new(0, -10, 1, 8), .75, 270)
-                                                                                            local nBar = c("Frame", {Size = UDim2.new(0, 3, 1, 0), BackgroundColor3 = a.Accent, BorderSizePixel = 0, ZIndex = 2, Parent = g}) e(nBar, UDim.new(0, 2))
-                                                                                            local m = c(k, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, Parent = g}) o(m, 16, 16, 14, 24)
-                                                                                            local n = 0
-                                                                                            if f.Icon then
-                                                                                                y(m, f.Icon, s == a.Text and a.Accent or s, UDim2.new(0, 0, 0, 8)) n = 24
-                                                                                            end
-                                                                                            d {Position = UDim2.fromOffset(n, 0), Size = UDim2.new(1, -28 - n, 0, 16), Text = f.Title or "Notification", TextSize = 14, TextColor3 = s, Parent = m}
-                                                                                            local p = c("TextButton", {AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 6, 0, -5), Size = UDim2.fromOffset(24, 24), BackgroundTransparency = 1, Text = "×", TextColor3 = a.Muted, TextSize = 22, FontFace = i.Bold, AutoButtonColor = false, Parent = m}) p.MouseEnter:Connect(function() b(p, {TextColor3 = a.Text}, .15)
-                                                                                            end
-                                                                                            ) p.MouseLeave:Connect(function() b(p, {TextColor3 = a.Muted}, .2)
-                                                                                            end
-                                                                                            )
-                                                                                            if f.Content then
-                                                                                                d {Position = UDim2.fromOffset(n, 21), Size = UDim2.new(1, -n, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = f.Content, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, TextWrapped = true, TextTruncate = Enum.TextTruncate.None, TextYAlignment = Enum.TextYAlignment.Top, Parent = m}
-                                                                                            end
-                                                                                            local w = c(k, {AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -8), Size = UDim2.new(1, -32, 0, 3), BackgroundColor3 = a.Surface3, BorderSizePixel = 0, Parent = g}) e(w, UDim.new(1, 0))
-                                                                                            local z = c(k, {Size = UDim2.fromScale(1, 1), BackgroundColor3 = a.Accent, BorderSizePixel = 0, Parent = w}) e(z, UDim.new(1, 0)) task.defer(function() if j.Parent then
-                                                                                                    b(j, {Size = UDim2.new(1, 0, 0, g.AbsoluteSize.Y)}, .3, Enum.EasingStyle.Quint)
-                                                                                                end
-                                                                                            end
-                                                                                            ) b(r, {Position = UDim2.fromOffset(0, 0)}, .5, Enum.EasingStyle.Back) b(g, {GroupTransparency = 0}, .3) b(v, {ImageTransparency = .6}, .4) b(z, {Size = UDim2.fromScale(0, 1)}, u, Enum.EasingStyle.Linear)
-                                                                                            local A = false
-                                                                                            local function q()
-                                                                                                if A then
-                                                                                                    return
-                                                                                                end
-                                                                                                A = true
-                                                                                                for a, b in ipairs(self._toasts) do
-                                                                                                    if b == q then
-                                                                                                        table.remove(self._toasts, a)
-                                                                                                        break
-                                                                                                    end
-                                                                                                end
-                                                                                                b(r, {Position = UDim2.fromOffset(320, 0)}, .3, Enum.EasingStyle.Quint) b(g, {GroupTransparency = 1}, .2) b(B, {Transparency = 1}, .15) b(v, {ImageTransparency = 1}, .2) task.delay(.22, function() j.ClipsDescendants = true b(j, {Size = UDim2.new(1, 0, 0, -4)}, .22, Enum.EasingStyle.Quint) task.delay(.24, function() j:Destroy()
-                                                                                                end
-                                                                                                )
-                                                                                            end
-                                                                                            )
-                                                                                        end
-                                                                                        task.delay(u, q) p.MouseButton1Click:Connect(q) table.insert(self._toasts, q)
-                                                                                        while #self._toasts > self.MaxNotifications do
-                                                                                            local a = table.remove(self._toasts, 1) a()
-                                                                                        end
-                                                                                        return {Dismiss = q}
+                                                                                    local function au(a, c) c = c or 0 a.GroupTransparency = 1 a.Position = UDim2.fromOffset(0, c + 14) a.Visible = true b(a, {GroupTransparency = 0, Position = UDim2.fromOffset(0, c)}, .32, Enum.EasingStyle.Quint)
                                                                                     end
-                                                                                    function g:Destroy()
-                                                                                        if self._destroyed then
-                                                                                            return
+                                                                                    function g:_buildHome(f)
+                                                                                        local g, n, p, w = "Frame", "UIListLayout", "NoDrag", "Executor"
+                                                                                        local m = self:Tab {Name = f.Name or "Home", Desc = f.Desc, Icon = f.Icon or "house"}
+                                                                                        local q = m.List
+                                                                                        local x = f.Pages or f.Tabs
+                                                                                        local r = {}
+                                                                                        local s
+                                                                                        if type(x) == "table" and #x > 0 then
+                                                                                            s = c(g, {Size = UDim2.new(1, 0, 0, 32), BackgroundTransparency = 1, LayoutOrder = 1, Parent = q}) c(n, {FillDirection = Enum.FillDirection.Horizontal, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 6), Parent = s})
                                                                                         end
-                                                                                        self._destroyed = true
-                                                                                        for a, b in ipairs(f.Windows) do
-                                                                                            if b == self then
-                                                                                                table.remove(f.Windows, a)
-                                                                                                break
-                                                                                            end
+                                                                                        local y = f.Greeting
+                                                                                        if y == nil then
+                                                                                            local a = tonumber(os.date "%H") or 12
+                                                                                            local b = a < 12 and "morning" or(a < 18 and "afternoon" or "evening") y = "Good " .. b .. "."
                                                                                         end
-                                                                                        for b, a in ipairs(self._connections) do
-                                                                                            a:Disconnect()
+                                                                                        local j = c(g, {Size = UDim2.new(1, 0, 0, 58), BackgroundColor3 = a.Surface2, BorderSizePixel = 0, LayoutOrder = 2, Parent = q}) j:SetAttribute(p, true) e(j) h(j)
+                                                                                        local z = c("ImageLabel", {Position = UDim2.fromOffset(12, 11), Size = UDim2.fromOffset(36, 36), BackgroundColor3 = a.Surface, BorderSizePixel = 0, Parent = j}) e(z, UDim.new(0, 8)) h(z) task.spawn(function() local b, a = pcall(function() return D:GetUserThumbnailAsync(E.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100)
                                                                                         end
-                                                                                        self._connections = {}
-                                                                                        b(self.Scale, {Scale = .9}, .2) b(self.Body, {GroupTransparency = 1}, .2) b(self.BodyStroke, {Transparency = 1}, .12) b(self.Shadow, {ImageTransparency = 1}, .2) task.delay(.22, function() self.Gui:Destroy()
+                                                                                        ) if b and a then
+                                                                                            z.Image = a
+                                                                                        end
+                                                                                    end
+                                                                                    ) d {Position = UDim2.fromOffset(58, 11), Size = UDim2.new(1, -72, 0, 18), Text = (f.Welcome or "Hello, ") .. E.DisplayName, TextSize = 15, Parent = j}
+                                                                                    d {Position = UDim2.fromOffset(58, 30), Size = UDim2.new(1, -72, 0, 16), Text = y, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, Parent = j}
+                                                                                    local t = c(g, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, LayoutOrder = 3, Parent = q}) c(n, {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 8), Parent = t})
+                                                                                    if f.Sections ~= false then
+                                                                                        local b = c(g, {Size = UDim2.new(1, 0, 0, 24), BackgroundTransparency = 1, LayoutOrder = 1, Parent = t})
+                                                                                        local e = d {Position = UDim2.fromOffset(2, 6), Size = UDim2.new(0, 0, 0, 16), AutomaticSize = Enum.AutomaticSize.X, Text = string.upper(f.SectionName or "System info"), TextSize = 12, TextColor3 = a.Muted, TextTruncate = Enum.TextTruncate.None, Parent = b}
+                                                                                        local i = c(g, {AnchorPoint = Vector2.new(1, .5), Position = UDim2.new(1, 0, 0, 14), Size = UDim2.new(1, -12, 0, 1), BackgroundColor3 = a.Stroke, BorderSizePixel = 0, Parent = b})
+                                                                                        local function h() i.Size = UDim2.new(1, -(e.AbsoluteSize.X + 14), 0, 1)
+                                                                                        end
+                                                                                        e:GetPropertyChangedSignal "AbsoluteSize":Connect(h) task.defer(h)
+                                                                                    end
+                                                                                    local C = c(g, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, LayoutOrder = 2, Parent = t}) c("UIGridLayout", {CellSize = UDim2.new(.5, -4, 0, 62), CellPadding = UDim2.fromOffset(8, 8), SortOrder = Enum.SortOrder.LayoutOrder, Parent = C})
+                                                                                    local N = f.Stats or {"FPS", "Ping", w, "Game", "Region", "Time"}
+                                                                                    local F = {}
+                                                                                    for b, a in ipairs(N) do
+                                                                                        F[a] = true
+                                                                                    end
+                                                                                    local G = 0
+                                                                                    local function l(a, b, c)
+                                                                                        if not F[a] then
+                                                                                            return nil
+                                                                                        end
+                                                                                        G += 1
+                                                                                        return at(C, G, b, c)
+                                                                                    end
+                                                                                    local H = l("FPS", "activity", "FPS")
+                                                                                    local I = l("Ping", "wifi", "Ping")
+                                                                                    local J = l(w, "terminal", w)
+                                                                                    local A = l("Game", "gamepad-2", "Game")
+                                                                                    local B = l("Region", "globe", "Server region")
+                                                                                    local K = l("Time", "clock", "Time of day")
+                                                                                    local L = l("Players", "users", "Players")
+                                                                                    local M = l("Uptime", "timer", "Session")
+                                                                                    if J then
+                                                                                        J.Text = aj()
+                                                                                    end
+                                                                                    if A then
+                                                                                        A.Text = "Loading" task.spawn(function() A.Text = ak()
                                                                                         end
                                                                                         )
                                                                                     end
-                                                                                    return f
+                                                                                    if B then
+                                                                                        B.Text = "Loading" am(function(a) B.Text = a
+                                                                                        end
+                                                                                        )
+                                                                                    end
+                                                                                    local v = 0
+                                                                                    local O = os.clock() self:_listen("Render", function() v += 1
+                                                                                    end
+                                                                                    ) task.spawn(function() while not self._destroyed and m.List.Parent and m._page.Parent do
+                                                                                            if not self.Open or self.CurrentTab ~= m then
+                                                                                                v = 0 task.wait(1) continue
+                                                                                            end
+                                                                                            if H then
+                                                                                                H.Text = tostring(v)
+                                                                                            end
+                                                                                            v = 0 if I then
+                                                                                                local a, b = pcall(function() return math.floor(E:GetNetworkPing() * 1e3)
+                                                                                                end
+                                                                                                ) I.Text = (a and b or 0) .. " ms"
+                                                                                            end
+                                                                                            if K then
+                                                                                                K.Text = os.date(f.TimeFormat or "%H:%M")
+                                                                                            end
+                                                                                            if L then
+                                                                                                L.Text = #D:GetPlayers() .. " / " .. D.MaxPlayers
+                                                                                            end
+                                                                                            if M then
+                                                                                                local a = math.floor(os.clock() - O) M.Text = string.format("%d:%02d", math.floor(a / 60), a % 60)
+                                                                                            end
+                                                                                            task.wait(1)
+                                                                                        end
+                                                                                    end
+                                                                                    ) table.insert(r, {Title = f.SectionName or "Details", Icon = f.TabIcon or "layout-grid", Frame = t})
+                                                                                    if s then
+                                                                                        for j, b in ipairs(x) do
+                                                                                            local f = c(g, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, Visible = false, LayoutOrder = 3, Parent = q}) c(n, {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 8), Parent = f})
+                                                                                            if type(b.Content) == "string" then
+                                                                                                local j = c(g, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = a.Surface2, BorderSizePixel = 0, LayoutOrder = 1, Parent = f}) j:SetAttribute(p, true) e(j) h(j) o(j, 14, 14, 12, 14) d {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = b.Content, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, TextWrapped = true, TextTruncate = Enum.TextTruncate.None, TextYAlignment = Enum.TextYAlignment.Top, Parent = j}
+                                                                                            end
+                                                                                            if type(b.Entries) == "table" then
+                                                                                                for m, b in ipairs(b.Entries) do
+                                                                                                    local j = c(g, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = a.Surface2, BorderSizePixel = 0, LayoutOrder = m, Parent = f}) j:SetAttribute(p, true) e(j) h(j) o(j, 14, 14, 12, 14) c(n, {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 4), Parent = j})
+                                                                                                    local l = c(g, {Size = UDim2.new(1, 0, 0, 18), BackgroundTransparency = 1, LayoutOrder = 1, Parent = j}) d {Size = UDim2.new(1, -70, 1, 0), Text = b.Title or b.Version or "Update", TextSize = 14, Parent = l}
+                                                                                                    if b.Date or b.Tag then
+                                                                                                        local f = c(g, {AnchorPoint = Vector2.new(1, .5), Position = UDim2.new(1, 0, .5, 0), Size = UDim2.fromOffset(0, 20), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = a.Surface, BorderSizePixel = 0, Parent = l}) e(f, UDim.new(0, 5)) h(f) o(f, 8, 8) d {Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = b.Tag or b.Date, TextSize = 11, TextColor3 = a.Muted, TextTruncate = Enum.TextTruncate.None, Parent = f}
+                                                                                                    end
+                                                                                                    local k = b.Content or b.Body
+                                                                                                    if type(b.Changes) == "table" then
+                                                                                                        k = "• " .. table.concat(b.Changes, "\n• ")
+                                                                                                    end
+                                                                                                    if k then
+                                                                                                        d {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = k, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, TextWrapped = true, TextTruncate = Enum.TextTruncate.None, TextYAlignment = Enum.TextYAlignment.Top, LayoutOrder = 2, Parent = j}
+                                                                                                    end
+                                                                                                end
+                                                                                            end
+                                                                                            if type(b.Build) == "function" then
+                                                                                                    k(b.Build, f)
+                                                                                                    for b, a in ipairs(f:GetChildren()) do
+                                                                                                        if a:IsA "GuiObject" then
+                                                                                                            a:SetAttribute(p, true)
+                                                                                                        end
+                                                                                                    end
+                                                                                                end
+                                                                                                table.insert(r, {Title = b.Name or b.Title or "Page", Icon = b.Icon, Frame = f})
+                                                                                            end
+                                                                                            local f = {}
+                                                                                            local function l(c, d)
+                                                                                                local e = self._homeIndex ~= c self._homeIndex = c j.Visible = c == 1
+                                                                                                if c == 1 and e and not d then
+                                                                                                    ac(j)
+                                                                                                end
+                                                                                                for i, k in ipairs(r) do
+                                                                                                    local g = i == c
+                                                                                                    local j = k.Frame j.Visible = g
+                                                                                                    if g and e and not d then
+                                                                                                        for b, a in ipairs(j:GetChildren()) do
+                                                                                                            if a:IsA "GuiObject" then
+                                                                                                                ac(a)
+                                                                                                            end
+                                                                                                        end
+                                                                                                    end
+                                                                                                    local h = f[i]
+                                                                                                    if h then
+                                                                                                        b(h.Frame, {BackgroundTransparency = g and 0 or 1}, .15) b(h.Stroke, {Transparency = g and 0 or 1}, .15) b(h.Label, {TextColor3 = g and a.Text or a.Muted}, .15)
+                                                                                                        if h.Icon then
+                                                                                                            b(h.Icon, {ImageColor3 = g and a.Accent or a.Muted}, .15)
+                                                                                                        end
+                                                                                                    end
+                                                                                                end
+                                                                                            end
+                                                                                            for i, k in ipairs(r) do
+                                                                                                local g = c("TextButton", {Size = UDim2.fromOffset(0, 32), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = a.Surface2, BackgroundTransparency = 1, Text = "", AutoButtonColor = false, LayoutOrder = i, Parent = s}) e(g, UDim.new(0, 7))
+                                                                                                local m = h(g, a.Stroke, 1) o(g, 12, 12)
+                                                                                                local j
+                                                                                                if k.Icon then
+                                                                                                    j = c("ImageLabel", {AnchorPoint = Vector2.new(0, .5), Position = UDim2.new(0, 0, .5, 0), Size = UDim2.fromOffset(14, 14), BackgroundTransparency = 1, ImageColor3 = a.Muted, ScaleType = Enum.ScaleType.Fit, Parent = g}) u(j, k.Icon)
+                                                                                                end
+                                                                                                local n = d {Position = UDim2.fromOffset(j and 20 or 0, 0), Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = k.Title, TextSize = 13, TextColor3 = a.Muted, TextTruncate = Enum.TextTruncate.None, Parent = g}
+                                                                                                f[i] = {Frame = g, Stroke = m, Label = n, Icon = j}
+                                                                                                g.MouseEnter:Connect(function() if self._homeIndex ~= i then
+                                                                                                        b(g, {BackgroundTransparency = .4}, .12) b(m, {Transparency = .5}, .12)
+                                                                                                    end
+                                                                                                end
+                                                                                                ) g.MouseLeave:Connect(function() if self._homeIndex ~= i then
+                                                                                                        b(g, {BackgroundTransparency = 1}, .2) b(m, {Transparency = 1}, .2)
+                                                                                                    end
+                                                                                                end
+                                                                                                ) g.MouseButton1Click:Connect(function() l(i)
+                                                                                                end
+                                                                                                )
+                                                                                            end
+                                                                                            l(1)
+                                                                                        end
+                                                                                        m._order = 10 self.Home = m
+                                                                                        return m
+                                                                                    end
+                                                                                    function g:Tab(g, t) g = l(g, {Title = "Name", Description = "Desc"})
+                                                                                        if t ~= nil and g.Icon == nil then
+                                                                                            g.Icon = t
+                                                                                        end
+                                                                                        local f = setmetatable({Name = g.Name or "Tab", Window = self, _order = 0}, j)
+                                                                                        local k = c("TextButton", {Size = UDim2.new(1, 0, 0, 38), BackgroundColor3 = a.Surface2, BackgroundTransparency = 1, Text = "", AutoButtonColor = false, LayoutOrder = #self.Tabs + 1, Parent = self.TabList}) e(k)
+                                                                                        local q = h(k, a.Stroke, 1) f._button = k
+                                                                                        local r = g.Icon ~= nil
+                                                                                        if r then
+                                                                                            local b = c("ImageLabel", {AnchorPoint = Vector2.new(0, .5), Position = UDim2.new(0, 12, .5, 0), Size = UDim2.fromOffset(16, 16), BackgroundTransparency = 1, ImageColor3 = a.Muted, ScaleType = Enum.ScaleType.Fit, Parent = k}) u(b, g.Icon) f._icon = b
+                                                                                        end
+                                                                                        f._label = d {Position = UDim2.fromOffset(r and 36 or 14, 0), Size = UDim2.new(1, -(r and 44 or 22), 1, 0), Text = f.Name, TextColor3 = a.Muted, Parent = k}
+                                                                                        local m = c("Frame", {Name = f.Name, Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Visible = false, Parent = self.Content}) f._page = m d {Position = UDim2.fromOffset(24, 20), Size = UDim2.new(1, -72, 0, 24), Text = f.Name, TextSize = 22, Parent = m}
+                                                                                        if g.Desc then
+                                                                                            d {Position = UDim2.fromOffset(24, 44), Size = UDim2.new(1, -72, 0, 16), Text = g.Desc, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, Parent = m}
+                                                                                        end
+                                                                                        local v = g.Desc and 70 or 58
+                                                                                        local n = c("ScrollingFrame", {Position = UDim2.fromOffset(0, v), Size = UDim2.new(1, 0, 1, -v), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 2, ScrollBarImageColor3 = a.Accent, ScrollBarImageTransparency = .5, AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(), Parent = m}) o(n, 24, 24, 2, 24) c("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 8), Parent = n}) f.List = n
+                                                                                        local s, p = as(m, g.Icon or "layout-grid", g.EmptyText or "Nothing here yet"), 0 n.ChildAdded:Connect(function(a) if a:IsA "GuiObject" then
+                                                                                                p += 1 s.Visible = false
+                                                                                            end
+                                                                                        end
+                                                                                        ) n.ChildRemoved:Connect(function(a) if a:IsA "GuiObject" then
+                                                                                                p = math.max(p - 1, 0) s.Visible = p <= 0
+                                                                                            end
+                                                                                        end
+                                                                                        ) s.Visible = true k.MouseEnter:Connect(function() if self.CurrentTab ~= f then
+                                                                                                b(k, {BackgroundTransparency = .4}, .12) b(q, {Transparency = .5}, .12)
+                                                                                            end
+                                                                                        end
+                                                                                        ) k.MouseLeave:Connect(function() if self.CurrentTab ~= f then
+                                                                                                b(k, {BackgroundTransparency = 1}, .2) b(q, {Transparency = 1}, .2)
+                                                                                            end
+                                                                                        end
+                                                                                        ) k.MouseButton1Click:Connect(function() self:SelectTab(f)
+                                                                                        end
+                                                                                        ) f._stroke = q
+                                                                                        if not self._introDone then
+                                                                                            k.Visible = false
+                                                                                        end
+                                                                                        table.insert(self.Tabs, f)
+                                                                                        if #self.Tabs == 1 then
+                                                                                            task.defer(function() self:SelectTab(f)
+                                                                                            end
+                                                                                            )
+                                                                                        end
+                                                                                        return f
+                                                                                    end
+                                                                                    g.CreateTab = g.Tab
+                                                                                    function g:Dialog(j)
+                                                                                        local s = "TextTransparency" j = l(j, {Text = "Content", Message = "Content"})
+                                                                                        if self._dialog then
+                                                                                            self._dialog.Close()
+                                                                                        end
+                                                                                        local f = 18
+                                                                                        local q = c("TextButton", {Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, ZIndex = 40, Parent = self.Body})
+                                                                                        local g = c("Frame", {AnchorPoint = Vector2.new(.5, .5), Position = UDim2.new(.5, 0, .5, 10), Size = UDim2.fromOffset(300, 120), BackgroundColor3 = a.Background, BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 41, Parent = q}) e(g, UDim.new(0, 10))
+                                                                                        local u = h(g, a.Stroke, 1)
+                                                                                        local v = c("UIScale", {Scale = .94, Parent = g})
+                                                                                        local m, t = {}, 0
+                                                                                        if j.Icon then
+                                                                                            local c, b = y(g, j.Icon, a.Accent, UDim2.new(0, f, 0, f + 9)) b.ImageTransparency = 1 c.ZIndex = 42 b.ZIndex = 42 table.insert(m, {b, "ImageTransparency", 0}) t = 24
+                                                                                        end
+                                                                                        local x = d {Position = UDim2.fromOffset(f + t, f), Size = UDim2.new(1, -(f * 2 + t), 0, 18), Text = j.Title or "Are you sure?", TextSize = 15, TextTransparency = 1, ZIndex = 42, Parent = g}
+                                                                                        table.insert(m, {x, s, 0})
+                                                                                        local n = 0
+                                                                                        if j.Content then
+                                                                                            local b = d {Position = UDim2.fromOffset(f, f + 24), Size = UDim2.new(1, -f * 2, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = j.Content, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, TextWrapped = true, TextTransparency = 1, TextTruncate = Enum.TextTruncate.None, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 42, Parent = g}
+                                                                                            table.insert(m, {b, s, 0}) n = math.max(b.TextBounds.Y, 16) + 6 b:GetPropertyChangedSignal "TextBounds":Connect(function() local a = math.max(b.TextBounds.Y, 16) + 6 if a ~= n then
+                                                                                                    n = a g.Size = UDim2.fromOffset(300, f + 24 + n + 12 + 34 + f) local b = g:FindFirstChild "ButtonRow" if b then
+                                                                                                        b.Position = UDim2.fromOffset(f, f + 24 + n + 12)
+                                                                                                    end
+                                                                                                end
+                                                                                            end
+                                                                                            )
+                                                                                        end
+                                                                                        local w = c("Frame", {Name = "ButtonRow", Position = UDim2.fromOffset(f, f + 24 + n + 12), Size = UDim2.new(1, -f * 2, 0, 34), BackgroundTransparency = 1, ZIndex = 42, Parent = g}) c("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 8), Parent = w}) g.Size = UDim2.fromOffset(300, f + 24 + n + 12 + 34 + f)
+                                                                                        local p, r = {}, false
+                                                                                        function p.Close()
+                                                                                            if r then
+                                                                                                return
+                                                                                            end
+                                                                                            r = true
+                                                                                            if self._dialog == p then
+                                                                                                self._dialog = nil
+                                                                                            end
+                                                                                            b(q, {BackgroundTransparency = 1}, .18) b(g, {BackgroundTransparency = 1, Position = UDim2.new(.5, 0, .5, 8)}, .18, Enum.EasingStyle.Quint) b(v, {Scale = .96}, .18, Enum.EasingStyle.Quint) b(u, {Transparency = 1}, .12)
+                                                                                            for c, a in ipairs(m) do
+                                                                                                b(a[1], {[a[2]] = 1}, .12)
+                                                                                            end
+                                                                                            task.delay(.2, function() q:Destroy()
+                                                                                            end
+                                                                                            )
+                                                                                        end
+                                                                                        for q, j in ipairs(j.Buttons or {}) do
+                                                                                            local g = j.Variant == "Primary"
+                                                                                            local f = c("TextButton", {Size = UDim2.fromOffset(0, 34), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = g and a.Accent or a.Surface2, BackgroundTransparency = 1, BorderSizePixel = 0, Text = "", AutoButtonColor = false, ClipsDescendants = true, LayoutOrder = q, ZIndex = 43, Parent = w}) e(f, UDim.new(0, 7))
+                                                                                            local i = h(f, g and a.Accent or a.Stroke, 1) o(f, 14, 14)
+                                                                                            local t = d {Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = j.Title or j.Name or "OK", TextSize = 13, TextColor3 = g and a.AccentDark or a.Text, TextXAlignment = Enum.TextXAlignment.Center, TextTransparency = 1, ZIndex = 44, Parent = f}
+                                                                                            local l = g and .12 or 0
+                                                                                            local n = g and .4 or 0 table.insert(m, {f, "BackgroundTransparency", l}) table.insert(m, {i, "Transparency", n}) table.insert(m, {t, s, 0}) f.MouseEnter:Connect(function() if r then
+                                                                                                    return
+                                                                                                end
+                                                                                                if g then
+                                                                                                    b(f, {BackgroundTransparency = 0}, .12) b(i, {Transparency = 0}, .12)
+                                                                                                else
+                                                                                                    b(i, {Color = a.StrokeHover}, .12)
+                                                                                                end
+                                                                                            end
+                                                                                            ) f.MouseLeave:Connect(function() if r then
+                                                                                                    return
+                                                                                                end
+                                                                                                if g then
+                                                                                                    b(f, {BackgroundTransparency = l}, .2) b(i, {Transparency = n}, .2)
+                                                                                                else
+                                                                                                    b(i, {Color = a.Stroke}, .2)
+                                                                                                end
+                                                                                            end
+                                                                                            ) f.MouseButton1Click:Connect(function() p.Close() k(j.Callback)
+                                                                                            end
+                                                                                            )
+                                                                                        end
+                                                                                        if j.CloseOnBackdrop ~= false then
+                                                                                            q.MouseButton1Click:Connect(function() p.Close() k(j.OnCancel)
+                                                                                            end
+                                                                                            )
+                                                                                        end
+                                                                                        self._dialog = p b(q, {BackgroundTransparency = .45}, .25) b(g, {BackgroundTransparency = 0, Position = UDim2.fromScale(.5, .5)}, .3, Enum.EasingStyle.Quint) b(u, {Transparency = 0}, .25) b(v, {Scale = 1}, .4, Enum.EasingStyle.Back)
+                                                                                        for c, a in ipairs(m) do
+                                                                                            b(a[1], {[a[2]] = a[3]}, .25)
+                                                                                        end
+                                                                                        return p
+                                                                                    end
+                                                                                    function g:Confirm(a) a = l(a, {Text = "Content", Message = "Content"})
+                                                                                        return self:Dialog {Title = a.Title or "Are you sure?", Content = a.Content, Icon = a.Icon, OnCancel = a.OnCancel, Buttons = {{Title = a.CancelText or "Cancel", Callback = a.OnCancel}, {Title = a.ConfirmText or "Confirm", Variant = "Primary", Callback = a.Callback}}}
+                                                                                    end
+                                                                                    function g:_listen(e, c, a)
+                                                                                        local b = self._inputListeners[e] table.insert(b, c)
+                                                                                        local function d()
+                                                                                            for a, d in ipairs(b) do
+                                                                                                if d == c then
+                                                                                                    table.remove(b, a)
+                                                                                                    break
+                                                                                                end
+                                                                                            end
+                                                                                        end
+                                                                                        if a then
+                                                                                            a._listeners = a._listeners or {}
+                                                                                            table.insert(a._listeners, d)
+                                                                                        end
+                                                                                        return d
+                                                                                    end
+                                                                                    function g:_indicatorY(a)
+                                                                                        local b = self.TabList
+                                                                                        local c = self.Scale.Scale
+                                                                                        return(a._button.AbsolutePosition.Y - b.AbsolutePosition.Y + a._button.AbsoluteSize.Y / 2) / c + b.Position.Y.Offset
+                                                                                    end
+                                                                                    function g:_placeIndicator(d)
+                                                                                        local a = self.Indicator
+                                                                                        local c = self:_indicatorY(d)
+                                                                                        if not a.Visible then
+                                                                                            a.Visible = true a.Position = UDim2.fromOffset(6, c) a.Size = UDim2.fromOffset(3, 0)
+                                                                                        end
+                                                                                        b(a, {Position = UDim2.fromOffset(6, c), Size = UDim2.fromOffset(3, 18)}, .35, Enum.EasingStyle.Back)
+                                                                                    end
+                                                                                    function g:SelectTab(c)
+                                                                                        if self.CurrentTab == c then
+                                                                                            return
+                                                                                        end
+                                                                                        local d = self.CurrentTab self.CurrentTab = c self:_settleTransition()
+                                                                                        local f = (self._transitionGeneration or 0) + 1 self._transitionGeneration = f
+                                                                                        if d then
+                                                                                            b(d._button, {BackgroundTransparency = 1}, .2) b(d._stroke, {Transparency = 1}, .2) b(d._label, {TextColor3 = a.Muted}, .2)
+                                                                                            if d._icon then
+                                                                                                b(d._icon, {ImageColor3 = a.Muted}, .2)
+                                                                                            end
+                                                                                            local c = self._outLayer d._page.Parent = c self._outPage = d._page c.GroupTransparency = 0 c.Position = UDim2.fromOffset(0, 0) c.Visible = true b(c, {GroupTransparency = 1, Position = UDim2.fromOffset(0, -10)}, .18) task.delay(.18, function() if self._transitionGeneration == f then
+                                                                                                    self:_settleOut()
+                                                                                                end
+                                                                                            end
+                                                                                            )
+                                                                                        end
+                                                                                        b(c._button, {BackgroundTransparency = 0}, .2) b(c._stroke, {Transparency = 0}, .2) b(c._label, {TextColor3 = a.Text}, .2)
+                                                                                        if c._icon then
+                                                                                            b(c._icon, {ImageColor3 = a.Accent}, .2)
+                                                                                        end
+                                                                                        self:_placeIndicator(c)
+                                                                                        local e = c._page e.Position = UDim2.fromOffset(0, 0) e.Visible = true e.Parent = self._inLayer self._inPage = e au(self._inLayer) task.delay(.32, function() if self._transitionGeneration == f then
+                                                                                                self:_settleIn()
+                                                                                            end
+                                                                                        end
+                                                                                        )
+                                                                                    end
+                                                                                    function g:_settleOut()
+                                                                                        local a = self._outPage
+                                                                                        if a then
+                                                                                            a.Parent = self.Content a.Visible = false self._outPage = nil
+                                                                                        end
+                                                                                        self._outLayer.Visible = false
+                                                                                    end
+                                                                                    function g:_settleIn()
+                                                                                        local a = self._inPage
+                                                                                        if a then
+                                                                                            a.Parent = self.Content a.Position = UDim2.fromOffset(0, 0) self._inPage = nil
+                                                                                        end
+                                                                                        self._inLayer.Visible = false
+                                                                                    end
+                                                                                    function g:_settleTransition() self:_settleOut() self:_settleIn()
+                                                                                    end
+                                                                                    function g:Toggle(a)
+                                                                                        if not self._introDone then
+                                                                                            return
+                                                                                        end
+                                                                                        if a == nil then
+                                                                                            a = not self.Open
+                                                                                        end
+                                                                                        if a == self.Open then
+                                                                                            return
+                                                                                        end
+                                                                                        self.Open = a
+                                                                                        if a then
+                                                                                            self.Root.Visible = true b(self.Scale, {Scale = self._fitScale or 1}, .4, Enum.EasingStyle.Back) b(self.Body, {GroupTransparency = 0}, .25) b(self.BodyStroke, {Transparency = 0}, .25) b(self.Shadow, {ImageTransparency = .6}, .3)
+                                                                                        else
+                                                                                            b(self.Scale, {Scale = (self._fitScale or 1) * .94}, .2, Enum.EasingStyle.Quint) b(self.Body, {GroupTransparency = 1}, .16) b(self.BodyStroke, {Transparency = 1}, .12) b(self.Shadow, {ImageTransparency = 1}, .16) task.delay(.2, function() if not self.Open then
+                                                                                                    self.Root.Visible = false
+                                                                                                end
+                                                                                            end
+                                                                                            )
+                                                                                        end
+                                                                                    end
+                                                                                    function g:SetKeepOnScreen(a) self.KeepOnScreen = a ~= false
+                                                                                        if self.KeepOnScreen then
+                                                                                            self:_clampToScreen()
+                                                                                        end
+                                                                                    end
+                                                                                    function g:SetKeybind(a)
+                                                                                        if type(a) == "string" then
+                                                                                            a = Enum.KeyCode[a]
+                                                                                        end
+                                                                                        if typeof(a) ~= "EnumItem" then
+                                                                                            return
+                                                                                        end
+                                                                                        self.Keybind = a
+                                                                                        if self._keyChipLabel then
+                                                                                            self._keyChipLabel.Text = P(a)
+                                                                                        end
+                                                                                        if self._wmSub then
+                                                                                            self._wmSub.Text = P(a) .. " · toggle"
+                                                                                        end
+                                                                                    end
+                                                                                    function g:Notify(f)
+                                                                                        local k = "Frame" f = l(f, {Text = "Content", Message = "Content", Image = "Icon"})
+                                                                                        local u = f.Duration or 4
+                                                                                        local s = an[f.Type] or a.Text self._notifyOrder += 1
+                                                                                        local j = c(k, {Size = UDim2.new(1, 0, 0, 0), BackgroundTransparency = 1, LayoutOrder = self._notifyOrder, Parent = self.NotifyHolder})
+                                                                                        local r = c(k, {Position = UDim2.fromOffset(320, 0), Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, Parent = j})
+                                                                                        local v = c("ImageLabel", {Position = UDim2.fromOffset(-20, -20), Size = UDim2.new(1, 40, 1, 40), BackgroundTransparency = 1, Image = t.Shadow, ImageColor3 = Color3.new(0, 0, 0), ImageTransparency = 1, ScaleType = Enum.ScaleType.Slice, SliceCenter = Rect.new(49, 49, 450, 450), ZIndex = 0, Parent = r})
+                                                                                        local g = c("CanvasGroup", {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = a.Background, BorderSizePixel = 0, GroupTransparency = 1, Parent = r}) e(g, UDim.new(0, 10))
+                                                                                        local B = h(g, a.Stroke) M(g) x(g, UDim2.fromOffset(280, 140), UDim2.new(1, -8, 0, -12), .8, 90) x(g, UDim2.fromOffset(140, 80), UDim2.new(0, -10, 1, 8), .75, 270)
+                                                                                        local nBar = c("Frame", {Size = UDim2.new(0, 3, 1, 0), BackgroundColor3 = a.Accent, BorderSizePixel = 0, ZIndex = 2, Parent = g}) e(nBar, UDim.new(0, 2))
+                                                                                        local m = c(k, {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, Parent = g}) o(m, 16, 16, 14, 24)
+                                                                                        local n = 0
+                                                                                        if f.Icon then
+                                                                                            y(m, f.Icon, s == a.Text and a.Accent or s, UDim2.new(0, 0, 0, 8)) n = 24
+                                                                                        end
+                                                                                        d {Position = UDim2.fromOffset(n, 0), Size = UDim2.new(1, -28 - n, 0, 16), Text = f.Title or "Notification", TextSize = 14, TextColor3 = s, Parent = m}
+                                                                                        local p = c("TextButton", {AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 6, 0, -5), Size = UDim2.fromOffset(24, 24), BackgroundTransparency = 1, Text = "×", TextColor3 = a.Muted, TextSize = 22, FontFace = i.Bold, AutoButtonColor = false, Parent = m}) p.MouseEnter:Connect(function() b(p, {TextColor3 = a.Text}, .15)
+                                                                                        end
+                                                                                        ) p.MouseLeave:Connect(function() b(p, {TextColor3 = a.Muted}, .2)
+                                                                                        end
+                                                                                        )
+                                                                                        if f.Content then
+                                                                                            d {Position = UDim2.fromOffset(n, 21), Size = UDim2.new(1, -n, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = f.Content, TextSize = 13, FontFace = i.Regular, TextColor3 = a.Muted, TextWrapped = true, TextTruncate = Enum.TextTruncate.None, TextYAlignment = Enum.TextYAlignment.Top, Parent = m}
+                                                                                        end
+                                                                                        local w = c(k, {AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -8), Size = UDim2.new(1, -32, 0, 3), BackgroundColor3 = a.Surface3, BorderSizePixel = 0, Parent = g}) e(w, UDim.new(1, 0))
+                                                                                        local z = c(k, {Size = UDim2.fromScale(1, 1), BackgroundColor3 = a.Accent, BorderSizePixel = 0, Parent = w}) e(z, UDim.new(1, 0)) task.defer(function() if j.Parent then
+                                                                                                b(j, {Size = UDim2.new(1, 0, 0, g.AbsoluteSize.Y)}, .3, Enum.EasingStyle.Quint)
+                                                                                            end
+                                                                                        end
+                                                                                        ) b(r, {Position = UDim2.fromOffset(0, 0)}, .5, Enum.EasingStyle.Back) b(g, {GroupTransparency = 0}, .3) b(v, {ImageTransparency = .6}, .4) b(z, {Size = UDim2.fromScale(0, 1)}, u, Enum.EasingStyle.Linear)
+                                                                                        local A = false
+                                                                                        local function q()
+                                                                                            if A then
+                                                                                                return
+                                                                                            end
+                                                                                            A = true
+                                                                                            for a, b in ipairs(self._toasts) do
+                                                                                                if b == q then
+                                                                                                    table.remove(self._toasts, a)
+                                                                                                    break
+                                                                                                end
+                                                                                            end
+                                                                                            b(r, {Position = UDim2.fromOffset(320, 0)}, .3, Enum.EasingStyle.Quint) b(g, {GroupTransparency = 1}, .2) b(B, {Transparency = 1}, .15) b(v, {ImageTransparency = 1}, .2) task.delay(.22, function() j.ClipsDescendants = true b(j, {Size = UDim2.new(1, 0, 0, -4)}, .22, Enum.EasingStyle.Quint) task.delay(.24, function() j:Destroy()
+                                                                                            end
+                                                                                            )
+                                                                                        end
+                                                                                        )
+                                                                                    end
+                                                                                    task.delay(u, q) p.MouseButton1Click:Connect(q) table.insert(self._toasts, q)
+                                                                                    while #self._toasts > self.MaxNotifications do
+                                                                                        local a = table.remove(self._toasts, 1) a()
+                                                                                    end
+                                                                                    return {Dismiss = q}
+                                                                                end
+                                                                                function g:Destroy()
+                                                                                    if self._destroyed then
+                                                                                        return
+                                                                                    end
+                                                                                    self._destroyed = true
+                                                                                    for a, b in ipairs(f.Windows) do
+                                                                                        if b == self then
+                                                                                            table.remove(f.Windows, a)
+                                                                                            break
+                                                                                        end
+                                                                                    end
+                                                                                    for b, a in ipairs(self._connections) do
+                                                                                        a:Disconnect()
+                                                                                    end
+                                                                                    self._connections = {}
+                                                                                    b(self.Scale, {Scale = .9}, .2) b(self.Body, {GroupTransparency = 1}, .2) b(self.BodyStroke, {Transparency = 1}, .12) b(self.Shadow, {ImageTransparency = 1}, .2) task.delay(.22, function() self.Gui:Destroy()
+                                                                                    end
+                                                                                    )
+                                                                                end
+                                                                                return f
