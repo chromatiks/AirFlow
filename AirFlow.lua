@@ -23,7 +23,8 @@ local function l(b, c)
             end
         end
         if a.Range then
-            a.Min = a.Min or a.Range[1] a.Max = a.Max or a.Range[2]
+            a.Min = a.Min or a.Range[1]
+                    a.Max = a.Max or a.Range[2]
         end
         return a
     end
@@ -32,7 +33,8 @@ local function l(b, c)
         if b.Flag then
             f.Flags[b.Flag] = a
             if c then
-                local a = b.Callback b.Callback =
+                local a = b.Callback
+                                                b.Callback =
                 function(...)
                     if type(a) == "function" then
                             a(...)
@@ -1412,7 +1414,7 @@ local function l(b, c)
                                             ) s.Parent = k.Parent or ag() do
                                                 local wmOn = k.Watermark ~= false
                                                 local title = k.WatermarkTitle or k.Name or "AirFlow"
-                                                local sub = k.WatermarkSub or(P(N) .. " · toggle")
+                                                local sub = k.WatermarkSub or (P(N) .. " · toggle")
                                                 if wmOn then
                                                     local W = c("Frame", {Name = "Watermark", Position = UDim2.fromOffset(14, 14), Size = UDim2.fromOffset(0, 0), AutomaticSize = Enum.AutomaticSize.XY, BackgroundColor3 = a.Background, BorderSizePixel = 0, ZIndex = 100, ClipsDescendants = true, Parent = s}) e(W, UDim.new(0, 8)) h(W, a.Stroke) M(W) x(W, UDim2.fromOffset(160, 70), UDim2.new(1, 10, 0.5, 0), .82, 90) x(W, UDim2.fromOffset(90, 50), UDim2.new(0, -8, 1, 6), .78, 270)
                                                     local bar = c("Frame", {Size = UDim2.new(0, 3, 1, 0), BackgroundColor3 = a.Accent, BorderSizePixel = 0, ZIndex = 2, Parent = W}) e(bar, UDim.new(0, 2))
@@ -1434,7 +1436,16 @@ local function l(b, c)
                                                         j.Watermark.Visible = v ~= false
                                                     end
                                                 end
-                                                endO.Scale = .9 n.GroupTransparency = 1 Q.ImageTransparency = 1 j.BodyStroke.Transparency = 1 z.Visible = false j:_fitToScreen(true) table.insert(j._connections, s:GetPropertyChangedSignal(I):Connect(function() j:_fitToScreen() j:_clampToScreen()
+                                                end
+                                            O.Scale = .9
+                                            n.GroupTransparency = 1
+                                            Q.ImageTransparency = 1
+                                            j.BodyStroke.Transparency = 1
+                                            z.Visible = false
+                                            j:_fitToScreen(true)
+                                            table.insert(j._connections, s:GetPropertyChangedSignal(I):Connect(function()
+                                                j:_fitToScreen()
+                                                j:_clampToScreen()
                                                 end
                                                 ))
                                                 if k.OpenButton ~= nil and k.OpenButton ~= false or k.OpenButton == nil and m then
