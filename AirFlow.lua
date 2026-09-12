@@ -1486,7 +1486,7 @@ local function l(b, c)
                                                         -- custom list via buttons rebuilt
                                                     end
                                                     cfg:Button {Name = "Save / Overwrite", Desc = "Save all flagged values under the name above", Icon = "save", Style = "Primary", Callback = function()
-                                                            local n = (nameBox and nameBox:Get and nameBox:Get()) or j.ConfigName
+                                                            local n = (nameBox and type(nameBox.Get)=="function" and nameBox:Get()) or j.ConfigName
                                                             if type(n) ~= "string" or n == "" then
                                                                 j:Notify {Title = "Config", Content = "Enter a name first", Duration = 2} return
                                                             end
@@ -1498,7 +1498,7 @@ local function l(b, c)
                                                         end
                                                     }
                                                     cfg:Button {Name = "Load", Desc = "Load the named config", Icon = "folder-open", Callback = function()
-                                                            local n = (nameBox and nameBox:Get and nameBox:Get()) or j.ConfigName
+                                                            local n = (nameBox and type(nameBox.Get)=="function" and nameBox:Get()) or j.ConfigName
                                                             if type(n) ~= "string" or n == "" then
                                                                 j:Notify {Title = "Config", Content = "Enter a name first", Duration = 2} return
                                                             end
@@ -1510,7 +1510,7 @@ local function l(b, c)
                                                         end
                                                     }
                                                     cfg:Button {Name = "Delete", Desc = "Delete the named config", Icon = "trash-2", Callback = function()
-                                                            local n = (nameBox and nameBox:Get and nameBox:Get()) or j.ConfigName
+                                                            local n = (nameBox and type(nameBox.Get)=="function" and nameBox:Get()) or j.ConfigName
                                                             if type(n) ~= "string" or n == "" then
                                                                 return
                                                             end
