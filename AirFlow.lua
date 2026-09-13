@@ -173,10 +173,10 @@ local function l(b, c)
                 local t = f.Assets
                 local i = f.Fonts
                 local m = q.TouchEnabled and not q.KeyboardEnabled f.Touch = m
-                local K = m and 54 or 48
-                local v = m and 70 or 64
-                local L = m and 40 or 34
-                local s = m and 34 or 28
+                local K = m and 40 or 32
+                local v = m and 52 or 44
+                local L = m and 32 or 26
+                local s = m and 26 or 22
                 local W = {}
                 local function b(e, f, a, b, c) a = a or .2
                     if a <= 0 then
@@ -409,10 +409,11 @@ local function l(b, c)
                     else
                         name = tostring(b or "")
                     end
-                    local card = c("Frame", {Size = UDim2.new(.5, -5, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = a.Background, BorderSizePixel = 0, ClipsDescendants = true, LayoutOrder = self:_nextOrder(), Parent = self.List})
+                    local card = c("Frame", {Size = UDim2.new(.5, -5, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = a.Background, BackgroundTransparency = 0.22, BorderSizePixel = 0, ClipsDescendants = true, LayoutOrder = self:_nextOrder(), Parent = self.List})
+                    card:SetAttribute("IsSection", true)
                     e(card, UDim.new(0, 10)) h(card, a.Stroke)
                     c("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 0), Parent = card})
-                    local header = c("Frame", {Size = UDim2.new(1, 0, 0, 36), BackgroundTransparency = 1, LayoutOrder = 1, Parent = card})
+                    local header = c("TextButton", {Size = UDim2.new(1, 0, 0, 28), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, Active = true, LayoutOrder = 1, Parent = card}) header:SetAttribute("NoDrag", true)
                     local left = 12
                     if icon then
                         local ic = c("ImageLabel", {Position = UDim2.fromOffset(12, 10), Size = UDim2.fromOffset(16, 16), BackgroundTransparency = 1, ImageColor3 = a.Accent, ScaleType = Enum.ScaleType.Fit, Parent = header}) u(ic, icon) left = 34
@@ -420,89 +421,78 @@ local function l(b, c)
                     d {Position = UDim2.fromOffset(left, 0), Size = UDim2.new(1, -left - 8, 1, 0), Text = tostring(name), TextSize = 14, FontFace = i.Medium, TextColor3 = a.Text, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = header}
                     c("Frame", {Size = UDim2.new(1, 0, 0, 1), BackgroundColor3 = a.Stroke, BorderSizePixel = 0, LayoutOrder = 2, Parent = card})
                     local body = c("Frame", {Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, LayoutOrder = 3, Parent = card})
-                    o(body, 8, 8, 8, 10)
-                    c("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 6), Parent = body})
+                    o(body, 6, 6, 2, 6)
+                    c("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 1), Parent = body})
                     self._sectionList = body
                     self._sectionCard = card
                     -- section drag + snap ghost
                     do
                         local dragging = false
-                        local dragStart, startPos
-                        local ghost
-                        local function snapSlots()
+                        local dragStart, startPos, ghost
+                        local function listXY()
                             local list = self.List
-                            local cards = {}
-                            for _, ch in ipairs(list:GetChildren()) do
-                                if ch:IsA("Frame") and ch ~= ghost then
-                                    table.insert(cards, ch)
-                                end
-                            end
-                            table.sort(cards, function(a, b)
-                                return a.LayoutOrder < b.LayoutOrder
-                            end)
-                            return cards
+                            local origin = list.AbsolutePosition
+                            local canvas = Vector2.zero
+                            pcall(function() canvas = list.CanvasPosition end)
+                            return origin, canvas
                         end
-                        local function nearestSlot(absPos)
-                            local cards = snapSlots()
+                        header.MouseButton1Down:Connect(function()
+                            dragging = true
+                            local m = q:GetMouseLocation()
+                            dragStart = Vector2.new(m.X, m.Y)
+                            startPos = card.AbsolutePosition
+                            local origin, canvas = listXY()
+                            if ghost then ghost:Destroy() end
+                            ghost = c("Frame", {
+                                Size = UDim2.fromOffset(math.max(8, card.AbsoluteSize.X), math.max(8, card.AbsoluteSize.Y)),
+                                Position = UDim2.fromOffset(startPos.X - origin.X + canvas.X, startPos.Y - origin.Y + canvas.Y),
+                                BackgroundColor3 = a.Accent,
+                                BackgroundTransparency = 0.8,
+                                BorderSizePixel = 0,
+                                ZIndex = 100,
+                                Parent = self.List,
+                            })
+                            e(ghost, UDim.new(0, 10))
+                            h(ghost, a.Accent, 0.35, 1)
+                            card.ZIndex = 101
+                        end)
+                        local c1 = q.InputChanged:Connect(function(input)
+                            if not dragging or not ghost then return end
+                            if not N(input) then return end
+                            local m = Vector2.new(input.Position.X, input.Position.Y)
+                            local rel = m - dragStart
+                            local origin, canvas = listXY()
+                            ghost.Position = UDim2.fromOffset(startPos.X + rel.X - origin.X + canvas.X, startPos.Y + rel.Y - origin.Y + canvas.Y)
+                        end)
+                        local c2 = q.InputEnded:Connect(function(input)
+                            if not dragging then return end
+                            if not p(input) then return end
+                            dragging = false
+                            local m = Vector2.new(input.Position.X, input.Position.Y)
                             local best, bestDist, bestOrder = nil, math.huge, card.LayoutOrder
-                            for _, ch in ipairs(cards) do
-                                if ch ~= card then
-                                    local cpos = ch.AbsolutePosition + ch.AbsoluteSize * 0.5
-                                    local d = (cpos - absPos).Magnitude
-                                    if d < bestDist then
-                                        bestDist = d
+                            for _, ch in ipairs(self.List:GetChildren()) do
+                                if ch:IsA("GuiObject") and ch ~= card and ch ~= ghost and ch:GetAttribute("IsSection") then
+                                    local mid = ch.AbsolutePosition + ch.AbsoluteSize * 0.5
+                                    local dist = (Vector2.new(mid.X, mid.Y) - m).Magnitude
+                                    if dist < bestDist then
+                                        bestDist = dist
                                         best = ch
                                         bestOrder = ch.LayoutOrder
                                     end
                                 end
                             end
-                            return best, bestOrder
-                        end
-                        header.InputBegan:Connect(function(input)
-                            if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then
-                                return
-                            end
-                            dragging = true
-                            dragStart = Vector2.new(input.Position.X, input.Position.Y)
-                            startPos = card.AbsolutePosition
-                            ghost = c("Frame", {
-                                Size = UDim2.fromOffset(card.AbsoluteSize.X, card.AbsoluteSize.Y),
-                                Position = UDim2.fromOffset(card.AbsolutePosition.X - self.List.AbsolutePosition.X + self.List.CanvasPosition.X, card.AbsolutePosition.Y - self.List.AbsolutePosition.Y + self.List.CanvasPosition.Y),
-                                BackgroundColor3 = a.Accent,
-                                BackgroundTransparency = 0.85,
-                                BorderSizePixel = 0,
-                                ZIndex = 50,
-                                Parent = self.List,
-                            })
-                            e(ghost, UDim.new(0, 10))
-                            h(ghost, a.Accent, 0.5, 1)
-                            card.ZIndex = 60
-                        end)
-                        table.insert(self.Window._connections, q.InputChanged:Connect(function(input)
-                            if not dragging then return end
-                            if input.UserInputType ~= Enum.UserInputType.MouseMovement and input.UserInputType ~= Enum.UserInputType.Touch then return end
-                            local pos = Vector2.new(input.Position.X, input.Position.Y)
-                            local rel = pos - dragStart
-                            if ghost then
-                                local lp = self.List.AbsolutePosition
-                                local cp = self.List.CanvasPosition
-                                ghost.Position = UDim2.fromOffset(startPos.X + rel.X - lp.X + cp.X, startPos.Y + rel.Y - lp.Y + cp.Y)
-                            end
-                        end))
-                        table.insert(self.Window._connections, q.InputEnded:Connect(function(input)
-                            if not dragging then return end
-                            if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then return end
-                            dragging = false
-                            local pos = Vector2.new(input.Position.X, input.Position.Y)
-                            local target, order = nearestSlot(pos)
-                            if target and order then
-                                local myOrder = card.LayoutOrder
-                                card.LayoutOrder = order
-                                target.LayoutOrder = myOrder
+                            if best then
+                                local mine = card.LayoutOrder
+                                card.LayoutOrder = bestOrder
+                                best.LayoutOrder = mine
                             end
                             if ghost then ghost:Destroy() ghost = nil end
                             card.ZIndex = 1
-                        end))
+                        end)
+                        if self.Window and self.Window._connections then
+                            table.insert(self.Window._connections, c1)
+                            table.insert(self.Window._connections, c2)
+                        end
                     end
                     return n(self, {}, {Set = function()
                         end
@@ -554,7 +544,7 @@ local function l(b, c)
                             local h = d.Desc and v or K
                             local c, f = B(self, "TextButton", h, d) c.ClipsDescendants = true
                             if e then
-                                c.BackgroundColor3 = a.Accent c.BackgroundTransparency = .12 f.Color = a.Accent f.Transparency = .4 c.MouseEnter:Connect(function() b(c, {BackgroundTransparency = 0}, .12) b(f, {Transparency = 0}, .12)
+                                c.BackgroundColor3 = a.Accent c.BackgroundTransparency = .58 f.Color = a.Accent f.Transparency = .7 c.MouseEnter:Connect(function() b(c, {BackgroundTransparency = 0}, .12) b(f, {Transparency = 0}, .12)
                                 end
                                 ) c.MouseLeave:Connect(function() b(c, {BackgroundTransparency = .12}, .25) b(f, {Transparency = .4}, .25)
                                 end
@@ -1407,7 +1397,7 @@ local function l(b, c)
                                             if type(k.Keybind) == "string" then
                                                 k.Keybind = Enum.KeyCode[k.Keybind]
                                             end
-                                            local V = k.Size or UDim2.fromOffset(760, 480)
+                                            local V = k.Size or UDim2.fromOffset(680, 420)
                                             local N = k.Keybind or Enum.KeyCode.LeftAlt
                                             local j = setmetatable({Tabs = {}, CurrentTab = nil, Open = true, Keybind = N, _connections = {}, _controls = {}, _inputListeners = {Began = {}, Changed = {}, Ended = {}, Render = {}}, _frameSteps = {}, _destroyed = false}, g)
                                             local function B(a)
@@ -1427,7 +1417,7 @@ local function l(b, c)
                                             local z = c(p, {Name = "Window", AnchorPoint = Vector2.new(.5, .5), Position = UDim2.fromScale(.5, .5), Size = V, BackgroundTransparency = 1, Parent = s}) j.Root = z
                                             local O = c("UIScale", {Parent = z}) j.Scale = O
                                             local Q = c("ImageLabel", {Position = UDim2.fromOffset(-25, -25), Size = UDim2.new(1, 50, 1, 50), BackgroundTransparency = 1, Image = t.Shadow, ImageColor3 = Color3.new(0, 0, 0), ImageTransparency = .6, ScaleType = Enum.ScaleType.Slice, SliceCenter = Rect.new(49, 49, 450, 450), Parent = z}) j.Shadow = Q
-                                            local n = c(H, {Name = "Body", Size = UDim2.fromScale(1, 1), BackgroundColor3 = a.Background, BorderSizePixel = 0, Parent = z}) j.Body = n e(n, UDim.new(0, 10)) j.BodyStroke = h(n, a.Stroke) M(n) x(n, UDim2.fromOffset(620, 280), UDim2.new(.5, 0, 1, 12), .55, 270) x(n, UDim2.fromOffset(280, 180), UDim2.new(0, -30, 1, -20), .5, 90) x(n, UDim2.fromOffset(600, 320), UDim2.new(1, -10, 0, 0), .6, 90) x(n, UDim2.fromOffset(220, 220), UDim2.new(0, 50, 0, 30), .65, 45) x(n, UDim2.fromOffset(400, 200), UDim2.new(0.5, 0, 0.5, 0), .7, 0)
+                                            local n = c(H, {Name = "Body", Size = UDim2.fromScale(1, 1), BackgroundColor3 = a.Background, BorderSizePixel = 0, Parent = z}) j.Body = n e(n, UDim.new(0, 10)) j.BodyStroke = h(n, a.Stroke) M(n) x(n, UDim2.fromOffset(480, 180), UDim2.new(.5, 0, 1, 8), .82, 270) x(n, UDim2.fromOffset(160, 90), UDim2.new(0, -12, 1, -12), .8, 90) x(n, UDim2.fromOffset(400, 180), UDim2.new(1, -12, 0, 8), .85, 90)
                                             local C = c(p, {Name = "Sidebar", Size = UDim2.new(0, 170, 1, 0), BackgroundTransparency = 1, Parent = n}) c(p, {Position = UDim2.new(0, 170, 0, 28), Size = UDim2.new(0, 1, 1, -56), BackgroundColor3 = a.Stroke, BorderSizePixel = 0, Parent = n})
                                             local J = c(p, {Name = "Header", Size = UDim2.new(1, 0, 0, 72), BackgroundTransparency = 1, Parent = C})
                                             local X = c("ImageLabel", {Position = UDim2.fromOffset(22, 27), Size = UDim2.fromOffset(30, 28), BackgroundTransparency = 1, Image = "", ImageColor3 = a.Accent, ScaleType = Enum.ScaleType.Fit, Parent = J}) u(X, k.Icon or t.Logo) d {Position = UDim2.fromOffset(60, 25), Size = UDim2.new(1, -70, 0, 20), Text = k.Title or "Airflow", TextSize = 20, Parent = J}
@@ -1517,77 +1507,77 @@ local function l(b, c)
                                                     local W = c("Frame", {
                                                         Name = "Watermark",
                                                         AnchorPoint = Vector2.new(0.5, 0),
-                                                        Position = UDim2.new(0.5, 0, 0, 10),
-                                                        Size = UDim2.fromOffset(0, 0),
-                                                        AutomaticSize = Enum.AutomaticSize.XY,
+                                                        Position = UDim2.new(0.5, 0, 0, 8),
+                                                        Size = UDim2.fromOffset(0, 28),
+                                                        AutomaticSize = Enum.AutomaticSize.X,
                                                         BackgroundColor3 = a.Background,
                                                         BorderSizePixel = 0,
+                                                        ClipsDescendants = true,
                                                         Parent = wg,
                                                     })
-                                                    e(W, UDim.new(0, 8))
+                                                    e(W, UDim.new(0, 6))
                                                     h(W, a.Stroke, 0, 1)
                                                     M(W)
-                                                    x(W, UDim2.fromOffset(420, 100), UDim2.new(0.5, 0, 0.5, 0), .45, 90)
-                                                    x(W, UDim2.fromOffset(280, 80), UDim2.new(0, 0, 0.5, 0), .5, 0)
-                                                    x(W, UDim2.fromOffset(280, 80), UDim2.new(1, 0, 0.5, 0), .5, 180)
+                                                    x(W, UDim2.fromOffset(200, 40), UDim2.new(0.5, 0, 0.5, 0), .75, 90)
                                                     local hold = c("Frame", {
+                                                        Size = UDim2.new(0, 0, 1, 0),
+                                                        AutomaticSize = Enum.AutomaticSize.X,
                                                         BackgroundTransparency = 1,
-                                                        AutomaticSize = Enum.AutomaticSize.XY,
                                                         Parent = W,
                                                     })
-                                                    o(hold, 8, 16, 8, 16)
+                                                    o(hold, 8, 10, 0, 0)
                                                     c("UIListLayout", {
                                                         FillDirection = Enum.FillDirection.Horizontal,
                                                         VerticalAlignment = Enum.VerticalAlignment.Center,
-                                                        Padding = UDim.new(0, 10),
+                                                        Padding = UDim.new(0, 8),
                                                         SortOrder = Enum.SortOrder.LayoutOrder,
                                                         Parent = hold,
                                                     })
-                                                    local function metalText(props)
-                                                        local lab = d(props)
-                                                        local g = c("UIGradient", {
-                                                            Color = ColorSequence.new({
-                                                                ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 200, 210)),
-                                                                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
-                                                                ColorSequenceKeypoint.new(1, Color3.fromRGB(170, 170, 185)),
-                                                            }),
-                                                            Rotation = 90,
-                                                            Parent = lab,
-                                                        })
-                                                        return lab
-                                                    end
-                                                    local t1 = metalText({
-                                                        Size = UDim2.fromOffset(0, 18),
+                                                    local iconHold = c("Frame", {
+                                                        Size = UDim2.fromOffset(14, 14),
+                                                        BackgroundTransparency = 1,
+                                                        LayoutOrder = 0,
+                                                        Parent = hold,
+                                                    })
+                                                    local iconImg = c("ImageLabel", {
+                                                        Size = UDim2.fromScale(1, 1),
+                                                        BackgroundTransparency = 1,
+                                                        ImageColor3 = a.Accent,
+                                                        ScaleType = Enum.ScaleType.Fit,
+                                                        Parent = iconHold,
+                                                    })
+                                                    u(iconImg, k.WatermarkIcon or "sparkles")
+                                                    local t1 = d {
+                                                        Size = UDim2.fromOffset(0, 28),
                                                         AutomaticSize = Enum.AutomaticSize.X,
                                                         Text = tostring(title),
-                                                        TextSize = 14,
+                                                        TextSize = 13,
                                                         FontFace = i.Semibold or i.Medium,
                                                         TextColor3 = a.Text,
                                                         TextTruncate = Enum.TextTruncate.None,
                                                         LayoutOrder = 1,
                                                         Parent = hold,
+                                                    }
+                                                    c("UIGradient", {
+                                                        Color = ColorSequence.new({
+                                                            ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 200, 210)),
+                                                            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
+                                                            ColorSequenceKeypoint.new(1, Color3.fromRGB(170, 170, 185)),
+                                                        }),
+                                                        Rotation = 90,
+                                                        Parent = t1,
                                                     })
-                                                    local sep = metalText({
-                                                        Size = UDim2.fromOffset(0, 18),
+                                                    local t2 = d {
+                                                        Size = UDim2.fromOffset(0, 28),
                                                         AutomaticSize = Enum.AutomaticSize.X,
-                                                        Text = "·",
-                                                        TextSize = 14,
+                                                        Text = tostring(sub),
+                                                        TextSize = 12,
+                                                        FontFace = i.Regular,
                                                         TextColor3 = a.Muted,
                                                         TextTruncate = Enum.TextTruncate.None,
                                                         LayoutOrder = 2,
                                                         Parent = hold,
-                                                    })
-                                                    local t2 = metalText({
-                                                        Size = UDim2.fromOffset(0, 18),
-                                                        AutomaticSize = Enum.AutomaticSize.X,
-                                                        Text = tostring(sub),
-                                                        TextSize = 13,
-                                                        FontFace = i.Regular,
-                                                        TextColor3 = a.Muted,
-                                                        TextTruncate = Enum.TextTruncate.None,
-                                                        LayoutOrder = 3,
-                                                        Parent = hold,
-                                                    })
+                                                    }
                                                     j.Watermark = W
                                                     j._wmGui = wg
                                                     j._wmTitle = t1
@@ -1783,7 +1773,7 @@ local function l(b, c)
                                                 )) table.insert(self._frameSteps, function(f) if not a then
                                                         return
                                                     end
-                                                    b = r() - c local g = d() local h = 1 - math.exp(-f * 45) local e = g:Lerp(b, h) self.Root.Position = UDim2.fromOffset(e.X, e.Y)
+                                                    b = r() - c local g = d() local h = 1 - math.exp(-f * 18) local e = g:Lerp(b, h) self.Root.Position = UDim2.fromOffset(e.X, e.Y)
                                                 end
                                                 )
                                             end
