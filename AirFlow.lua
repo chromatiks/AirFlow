@@ -1686,11 +1686,11 @@ local function l(b, c)
                                                             j:Notify({Title = "Auto-save", Content = v and "On" or "Off", Duration = 1.5})
                                                         end})
                                                         cfg:Paragraph({Name = "Menu bind", Content = "Click the key chip in the sidebar to rebind the menu toggle."})
-                                                    ) if not ok then
+                                                        end)
+                                                        if not ok then
                                                             warn("[AirFlow] config: " .. tostring(err))
                                                         end
-                                                    end
-                                                    )
+                                                    end)
                                                 end
                                                 return j
                                             end
