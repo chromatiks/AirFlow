@@ -2632,4 +2632,7 @@ local function l(b, c)
                                                                                     end
                                                                                     )
                                                                                 end
+                                                                                function g:Unload()
+                                                                                    return self:Destroy()
+                                                                                end
                                                                                 return f
